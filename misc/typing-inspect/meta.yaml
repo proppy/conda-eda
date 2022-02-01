@@ -1,0 +1,36 @@
+{% set version = "0.7.1" %}
+
+package:
+  name: "typing-inspect"
+  version: "{{ version }}"
+
+source:
+  url: "https://pypi.io/packages/source/t/typing-inspect/typing_inspect-{{ version }}.tar.gz"
+  sha256: 047d4097d9b17f46531bf6f014356111a1b6fb821a24fe7ac909853ca2a782aa
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  host:
+    - mypy_extensions >=0.3.0
+    - pip
+    - python
+    - typing >=3.7.4
+    - typing_extensions >=3.7.4
+  run:
+    - mypy_extensions >=0.3.0
+    - python
+    - typing >=3.7.4
+    - typing_extensions >=3.7.4
+
+about:
+  home: "https://github.com/ilevkivskyi/typing_inspect"
+  license: MIT
+  license_family: MIT
+  summary: "Runtime inspection utilities for typing module."
+
+extra:
+  recipe-maintainers:
+    - proppy
