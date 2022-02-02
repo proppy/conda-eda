@@ -1,0 +1,44 @@
+package:
+  name: open_pdks
+  version: 1.0.274
+source:
+  url: http://opencircuitdesign.com/open_pdks/archive/open_pdks-1.0.274.tgz
+  sha256: 6a6e2d0dd743ecb29c4500d450aea6a7292d45b6c9e14867999c4378847b9e52
+  patches:
+    - skip-xschem-copy-when-disabled.patch
+requirements:
+  run:
+    open_pdks.sky130a
+build:
+  noarch: generic
+outputs:
+  - name: open_pdks.sky130a
+    requirements:
+      build:
+        - autoconf
+        - automake
+        - make
+      host:
+        - python
+        - magic
+        - skywater-pdk.sky130_fd_sc_hd
+        - skywater-pdk.sky130_fd_sc_hvl
+        - skywater-pdk.sky130_fd_io
+        - skywater-pdk.sky130_fd_pr
+    build:
+      noarch: generic
+    script: build-variant.sh
+    test:
+      commands:
+        - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_sc_hd
+        - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_sc_hvl
+        - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_io
+        - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_pr
+  
+about:
+  home: http://opencircuitdesign.com/open_pdks/
+  license: Apache-2.0
+
+extra:
+  recipe-maintainers:
+    - proppy
