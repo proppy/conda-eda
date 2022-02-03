@@ -23,7 +23,7 @@ build:
     
 requirements:
   run:
-    open_pdks.sky130a
+    - open_pdks.sky130a
 
 outputs:
   - name: python-skywater-pdk
