@@ -10,12 +10,6 @@ source:
     git_rev: master
     patches:
       - disable-tests.patch
-  - git_url: https://github.com/The-OpenROAD-Project/OpenSTA.git
-    git_rev: master
-    folder: src/sta
-  - git_url: https://github.com/The-OpenROAD-Project/abc.git
-    git_rev: master
-    folder: third-party/abc
 
 build:
   # number: 202202031935
