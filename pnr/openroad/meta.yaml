@@ -1,0 +1,77 @@
+# Use `conda-build-prepare` before building for a better version string.
+{% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG|replace('openroad-', '')|replace('-', '') or '0.X', GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
+
+package:
+  name: openroad
+  version: {{ version }}
+
+source:
+  - git_url: https://github.com/The-OpenROAD-Project/OpenROAD.git
+    git_rev: master
+    patches:
+      - disable-tests.patch
+  - git_url: https://github.com/The-OpenROAD-Project/OpenSTA.git
+    git_rev: master
+    folder: src/sta
+  - git_url: https://github.com/The-OpenROAD-Project/abc.git
+    git_rev: master
+    folder: third-party/abc
+
+build:
+  # number: 202202031935
+  number: {{ environ.get('DATE_NUM') }}
+  # string: 20220203_1935
+  string: {{ environ.get('DATE_STR') }}
+  script_env:
+    - CI
+
+requirements:
+  build:
+    - cmake
+    - swig
+    - {{ compiler('c') }}    
+    - {{ compiler('cxx') }}
+  host:
+    - boost
+    - eigen
+    - lemon
+    - spdlog
+    - readline
+  run:
+    openroad.app
+    openroad.sta
+
+outputs:
+  - name: openroad.app
+    requirements:
+      run:
+        - boost
+        - eigen
+        - lemon
+        - spdlog
+        - readline
+    files:
+      - bin/openroad
+    test:
+      commands:
+        - openroad -version
+  - name: openroad.sta
+    files:
+      - bin/sta
+    test:
+      commands:
+        - sta -version
+  - name: openroad.libsta
+    files:
+      - lib/libOpenSTA.a
+      - include/sta/
+    test:
+      commands:
+        - test -e $PREFIX/include/sta/Sta.hh
+about:
+  home: https://theopenroadproject.org/
+  license: BSD-3-Clause
+
+extra:
+  recipe-maintainers:
+    - proppy
