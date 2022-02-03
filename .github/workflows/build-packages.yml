@@ -758,6 +758,16 @@ jobs:
       - uses: actions/checkout@v2
       - uses: hdl/conda-ci@master
 
+  #69
+  openroad-linux:
+    runs-on: "ubuntu-20.04"
+    env:
+      PACKAGE: "pnr/openroad"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hdl/conda-ci@master
+
 
   master-package:
     runs-on: "ubuntu-20.04"
