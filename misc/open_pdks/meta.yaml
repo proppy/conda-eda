@@ -11,18 +11,6 @@ source:
   - git_url: https://github.com/google/skywater-pdk.git
     git_rev: main    
     folder: skywater-pdk
-  - git_url: https://github.com/google/skywater-pdk-libs-sky130_fd_sc_hd.git
-    git_rev: main
-    folder: skywater-pdk/libraries/sky130_fd_sc_hd/latest
-  - git_url: https://github.com/google/skywater-pdk-libs-sky130_fd_sc_hvl.git
-    git_rev: main    
-    folder: skywater-pdk/libraries/sky130_fd_sc_hvl/latest
-  - git_url: https://github.com/google/skywater-pdk-libs-sky130_fd_io.git
-    git_rev: main
-    folder: skywater-pdk/libraries/sky130_fd_io/latest
-  - git_url: https://github.com/google/skywater-pdk-libs-sky130_fd_pr.git
-    git_rev: main
-    folder: skywater-pdk/libraries/sky130_fd_pr/latest
 
 build:
   noarch: generic
