@@ -758,6 +758,15 @@ jobs:
       - uses: actions/checkout@v2
       - uses: hdl/conda-ci@master
 
+  #68
+  open_pdks-linux:
+    runs-on: "ubuntu-20.04"
+    env:
+      PACKAGE: "misc/open_pdks"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hdl/conda-ci@master
 
   master-package:
     runs-on: "ubuntu-20.04"
