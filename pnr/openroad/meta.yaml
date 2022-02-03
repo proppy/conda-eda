@@ -32,8 +32,8 @@ requirements:
     - spdlog
     - readline
   run:
-    openroad.app
-    openroad.sta
+    - openroad.app
+    - openroad.sta
 
 outputs:
   - name: openroad.app
