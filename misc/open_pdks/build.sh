@@ -2,13 +2,15 @@
 set -ex
 
 # make timing
-for LIB in skywater-pdk/libraries/sky130_*_sc_*/latest; do
+pushd $SRC_DIR/skywater-pdk/scripts/python-skywater-pdk/
+for LIB in $SRC_DIR/skywater-pdk/libraries/sky130_*_sc_*/latest; do
   if [ -d "$LIB/cells" ]; then
-    python -m skywater_pdk.liberty $LIB
-    python -m skywater_pdk.liberty $LIB all
-    python -m skywater_pdk.liberty $LIB all --ccsnoise
+    $PYTHON -m skywater_pdk.liberty $LIB
+    $PYTHON -m skywater_pdk.liberty $LIB all
+    $PYTHON -m skywater_pdk.liberty $LIB all --ccsnoise
   fi
 done
+popd
 
 # extract variant name from package name
 VARIANT=${PKG_NAME#open_pdks.sky130}
