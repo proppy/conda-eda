@@ -16,8 +16,23 @@
 
 set -ex
 
+# sanity check
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_sc_hd/latest/cells
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_sc_hd/latest/models
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_sc_hd/latest/tech
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_sc_hd/latest/timing
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_sc_hvl/latest/cells
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_sc_hvl/latest/models
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_sc_hvl/latest/tech
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_sc_hvl/latest/timing
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_io/latest/cells
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_pr/latest/cells
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_pr/latest/models
+test -d $SRC_DIR/skywater-pdk/libraries/sky130_fd_pr/latest/tech
+
 # make timing
 pushd $SRC_DIR/skywater-pdk/scripts/python-skywater-pdk/
+
 for LIB in $SRC_DIR/skywater-pdk/libraries/sky130_*_sc_*/latest; do
   if [ -d "$LIB/cells" ]; then
     $PYTHON -m skywater_pdk.liberty $LIB
@@ -26,6 +41,10 @@ for LIB in $SRC_DIR/skywater-pdk/libraries/sky130_*_sc_*/latest; do
   fi
 done
 popd
+
+# timing check
+find $SRC_DIR/skywater-pdk/libraries/sky130_fd_sc_hd/latest -path '*/timing/*.lib' -type f -print | grep timing
+find $SRC_DIR/skywater-pdk/libraries/sky130_fd_sc_hvl/latest -path '*/timing/*.lib' -type f -print | grep timing
 
 # extract variant name from package name
 VARIANT=${PKG_NAME#open_pdks.sky130}

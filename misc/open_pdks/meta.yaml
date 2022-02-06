@@ -10,13 +10,13 @@ source:
     git_rev: master
   - url: https://github.com/google/skywater-pdk/archive/refs/heads/main.zip
     folder: skywater-pdk
-  - url: https://github.com/google/skywater-pdk-libs-sky130_fd_sc_hd/archive/refs/heads/main.zip
+  - url: https://github.com/google/skywater-pdk-libs-sky130_fd_sc_hd/archive/refs/heads/branch-0.0.2.zip
     folder: skywater-pdk/libraries/sky130_fd_sc_hd/latest
-  - url: https://github.com/google/skywater-pdk-libs-sky130_fd_sc_hvl/archive/refs/heads/main.zip
+  - url: https://github.com/google/skywater-pdk-libs-sky130_fd_sc_hvl/archive/refs/heads/branch-0.0.3.zip
     folder: skywater-pdk/libraries/sky130_fd_sc_hvl/latest
-  - url: https://github.com/google/skywater-pdk-libs-sky130_fd_io/archive/refs/heads/main.zip
+  - url: https://github.com/google/skywater-pdk-libs-sky130_fd_io/archive/refs/heads/branch-0.2.1.zip
     folder: skywater-pdk/libraries/sky130_fd_io/latest
-  - url: https://github.com/google/skywater-pdk-libs-sky130_fd_pr/archive/refs/heads/main.zip
+  - url: https://github.com/google/skywater-pdk-libs-sky130_fd_pr/archive/refs/heads/branch-0.20.1.zip
     folder: skywater-pdk/libraries/sky130_fd_pr/latest
 
 build:
