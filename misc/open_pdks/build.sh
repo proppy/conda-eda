@@ -59,5 +59,5 @@ VARIANT=${VARIANT^^}
   --disable-alpha-sky130 \
   --disable-xschem-sky130 \
   --with-sky130-variants=$VARIANT
-make
-make install
+make V=1 -j$CPU_COUNT
+make V=1 install
