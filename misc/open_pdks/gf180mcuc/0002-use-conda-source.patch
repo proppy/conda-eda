@@ -1,0 +1,33 @@
+From 4dbd8131843b9bfb7c639cd31b9092a9f75ba3c0 Mon Sep 17 00:00:00 2001
+From: Johan Euphrosine <proppy@google.com>
+Date: Wed, 5 Oct 2022 14:10:13 +0900
+Subject: [PATCH 2/3] use conda source
+
+---
+ gf180mcu/Makefile.in | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/gf180mcu/Makefile.in b/gf180mcu/Makefile.in
+index 05f254e..5074995 100644
+--- a/gf180mcu/Makefile.in
++++ b/gf180mcu/Makefile.in
+@@ -131,11 +131,11 @@ endif
+ 
+ # Path to GF180MCU open PDK sources.  If this is specified, then all
+ # library repositories must be subdirectories of this path.
+-GF180MCU_PR_PATH = @GF180MCU_FD_PR_PATH@
+-GF180MCU_IO_PATH = @GF180MCU_FD_IO_PATH@
+-GF180MCU_SC_7T5V0_PATH = @GF180MCU_FD_SC_MCU7T5V0_PATH@
+-GF180MCU_SC_9T5V0_PATH = @GF180MCU_FD_SC_MCU9T5V0_PATH@
+-GF180MCU_SRAM_PATH = @GF180MCU_FD_IP_SRAM_PATH@
++GF180MCU_PR_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_pr
++GF180MCU_IO_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_io
++GF180MCU_SC_7T5V0_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_sc_mcu7t5v0
++GF180MCU_SC_9T5V0_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_sc_mcu9t5v0
++GF180MCU_SRAM_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_ip_sram
+ GF180MCU_OSU_SC_PATH = @GF180MCU_OSU_SC_PATH@
+ 
+ # Path to GF180MCU library sources
+-- 
+2.30.2
+

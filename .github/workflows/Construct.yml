@@ -1,0 +1,274 @@
+name: Build installers
+
+on:
+  push:
+    branch:
+      - 'main'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  ngspice-linux:
+    outputs:
+      NGSPICE_REV: ${{ steps.env.outputs.NGSPICE_REV }}
+      CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
+    runs-on: "ubuntu-20.04"
+    env:
+      PACKAGE: "sim/ngspice"
+      OS_NAME: "linux"
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+
+      - name: env
+        id: env
+        run: |
+          NGSPICE_REV=$(git ls-remote git://git.code.sf.net/p/ngspice/ngspice.git HEAD | cut -f 1)
+          echo "NGSPICE_REV=$NGSPICE_REV" >> $GITHUB_ENV
+          echo "::set-output name=NGSPICE_REV::$NGSPICE_REV"
+          CONDA_EDA_REV=$(git rev-parse HEAD)
+          echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
+          echo "::set-output name=CONDA_EDA_REV::$CONDA_EDA_REV"
+
+      - name: restore ngspice cache
+        id: cache-ngspice
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2
+          key: ${{ runner.os }}-ngspice-${{ env.NGSPICE_REV }}-${{ env.CONDA_EDA_REV }}
+
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: ./ci
+        if: steps.cache-ngspice.outputs.cache-hit != 'true'
+
+  gf180mcuc-linux:
+    outputs:
+      GF180MCUC_REV: ${{ steps.env.outputs.GF180MCUC_REV }}
+    runs-on: "ubuntu-20.04"
+    env:
+      PACKAGE: "misc/open_pdks/gf180mcuc"
+      OS_NAME: "linux"
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - name: env
+        id: env
+        run: |
+          GF180MCUC_REV=$(grep volare misc/open_pdks/gf180mcuc/build.sh | cut -d / -f 8 | cut -d - -f 2)
+          echo "GF180MCUC_REV=$GF180MCUC_REV" >> $GITHUB_ENV
+          echo "::set-output name=GF180MCUC_REV::$GF180MCUC_REV"
+
+      - name: restore gf180mcuc cache
+        id: cache-gf180mcuc
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
+          key: ${{ runner.os }}-gf180mcuc-${{ env.GF180MCUC_REV }}
+
+      - uses: ./ci
+        if: steps.cache-gf180mcuc.outputs.cache-hit != 'true'
+
+  openlane-sky130a-installer:
+    runs-on: "ubuntu-20.04"
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+
+      - name: construct installer
+        run: |
+          conda install constructor conda-build
+          constructor installer/openlane.sky130a/
+
+      - name: archive installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: "openlane-sky130a-installer"
+          path: |
+            /home/runner/work/conda-eda/conda-eda/openlane-sky130a-0-Linux-x86_64.sh
+
+  openlane-gf180mcuc-installer:
+    needs:
+      - gf180mcuc-linux
+    env:
+      GF180MCUC_REV: ${{ needs.gf180mcuc-linux.outputs.GF180MCUC_REV }}
+    runs-on: "ubuntu-20.04"
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+
+      - name: restore gf180mcuc cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
+          key: ${{ runner.os }}-gf180mcuc-${{ env.GF180MCUC_REV }}
+
+      - name: debug
+        run: |
+          find /home/runner/work/conda-eda/conda-eda/workdir/conda-env
+
+      - name: construct installer
+        run: |
+          conda install constructor conda-build
+          mkdir -p /tmp/conda-bld/{linux-64,noarch}
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
+          conda index /tmp/conda-bld
+          constructor installer/openlane.gf180mcuc/
+
+      - name: archive ngspice.gf180mcuc installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: "openlane-gf180mcuc-installer"
+          path: |
+            /home/runner/work/conda-eda/conda-eda/openlane-gf180mcuc-0-Linux-x86_64.sh
+        
+  analog-sky130a-installer:
+    needs:
+      - ngspice-linux
+    env:
+      NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
+      CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
+    runs-on: "ubuntu-20.04"
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+
+      - name: restore ngspice cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2
+          key: ${{ runner.os }}-ngspice-${{ env.NGSPICE_REV }}-${{ env.CONDA_EDA_REV }}
+
+      - name: construct installer
+        run: |
+          conda install constructor conda-build
+          mkdir -p /tmp/conda-bld/{linux-64,noarch}
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
+          conda index /tmp/conda-bld
+          constructor installer/analog.sky130a/
+
+      - name: archive installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: "analog-sky130a-installer"
+          path: |
+            /home/runner/work/conda-eda/conda-eda/analog-sky130a-0-Linux-x86_64.sh
+
+  analog-gf180mcuc-installer:
+    needs:
+      - ngspice-linux
+      - gf180mcuc-linux
+    env:
+      NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
+      CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
+      GF180MCUC_REV: ${{ needs.gf180mcuc-linux.outputs.GF180MCUC_REV }}
+    runs-on: "ubuntu-20.04"
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+
+      - name: restore ngspice cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2
+          key: ${{ runner.os }}-ngspice-${{ env.NGSPICE_REV }}-${{ env.CONDA_EDA_REV }}
+
+      - name: restore gf180mcuc cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
+          key: ${{ runner.os }}-gf180mcuc-${{ env.GF180MCUC_REV }}
+
+      - name: debug
+        run: |
+          find /home/runner/work/conda-eda/conda-eda/workdir/conda-env
+
+      - name: construct installer
+        run: |
+          conda install constructor conda-build
+          mkdir -p /tmp/conda-bld/{linux-64,noarch}
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
+          conda index /tmp/conda-bld
+          constructor installer/analog.gf180mcuc/
+
+      - name: archive ngspice.gf180mcuc installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: "analog-gf180mcuc-installer"
+          path: |
+            /home/runner/work/conda-eda/conda-eda/analog-gf180mcuc-0-Linux-x86_64.sh
+
+  release:
+    needs:
+      - openlane-sky130a-installer
+      - openlane-gf180mcuc-installer
+      - analog-sky130a-installer
+      - analog-gf180mcuc-installer
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v3
+
+      - run: |
+          git config --local user.name conda-eda@bot
+          git config --local user.email conda-eda@bot
+          TAG=$(git describe)
+          git tag $TAG
+          git push origin "HEAD:refs/tags/$TAG"
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ env.TAG }}
+          tag_name: ${{ env.TAG }}
+          files: |
+            openlane-*-installer/*.sh            
+            analog-*-installer/*.sh
