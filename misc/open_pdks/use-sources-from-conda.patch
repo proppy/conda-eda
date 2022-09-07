@@ -1,0 +1,21 @@
+diff --git a/gf180mcu/Makefile.in b/gf180mcu/Makefile.in
+index f1da0bc..35ebde5 100644
+--- a/gf180mcu/Makefile.in
++++ b/gf180mcu/Makefile.in
+@@ -131,11 +131,11 @@ endif
+ 
+ # Path to GF180MCU open PDK sources.  If this is specified, then all
+ # library repositories must be subdirectories of this path.
+-GF180MCU_PR_PATH = @GF180MCU_FD_PR_PATH@
+-GF180MCU_IO_PATH = @GF180MCU_FD_IO_PATH@
+-GF180MCU_SC_7T5V0_PATH = @GF180MCU_FD_SC_MCU7T5V0_PATH@
+-GF180MCU_SC_9T5V0_PATH = @GF180MCU_FD_SC_MCU9T5V0_PATH@
+-GF180MCU_SRAM_PATH = @GF180MCU_FD_IP_SRAM_PATH@
++GF180MCU_PR_PATH = ../gf180mcu-pdk/gf180mcu_fd_pr
++GF180MCU_IO_PATH = ../gf180mcu-pdk/gf180mcu_fd_io
++GF180MCU_SC_7T5V0_PATH = ../gf180mcu-pdk/gf180mcu_fd_sc_mcu7t5v0
++GF180MCU_SC_9T5V0_PATH = ../gf180mcu-pdk/gf180mcu_fd_sc_mcu9t5v0
++GF180MCU_SRAM_PATH = ../gf180mcu-pdk/gf180mcu_fd_ip_sram
+ 
+ # Path to GF180MCU library sources
+ PDK_URL = https://github.com/google

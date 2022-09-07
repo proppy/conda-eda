@@ -2,12 +2,15 @@
 {% set version = '%s_%04i_%s'| format(GIT_DESCRIBE_TAG | default('0.X'), GIT_DESCRIBE_NUMBER | default(0) | int, GIT_DESCRIBE_HASH | default('gUNKNOWN')) %}
 
 package:
-  name: open_pdks.sky130a
+  name: open_pdks
   version: {{ version }}
 
 source:
   - git_url: https://github.com/RTimothyEdwards/open_pdks.git
     git_rev: master
+    patches:
+      - disable-link-targets.patch
+      - use-sources-from-conda.patch
   - url: https://github.com/google/skywater-pdk/archive/refs/heads/main.zip
     folder: skywater-pdk
   - url: https://github.com/google/skywater-pdk-libs-sky130_fd_sc_hd/archive/refs/heads/branch-0.0.2.zip
@@ -20,6 +23,26 @@ source:
     folder: skywater-pdk/libraries/sky130_fd_pr/latest
   - url: https://files.pythonhosted.org/packages/07/1f/3d9ae865addc9ef6cb7b102d7d93e227c46b6e5e94db345cae2a30944efa/dataclasses_json-0.5.6-py3-none-any.whl
     sha256: 1d7f3a284a49d350ddbabde0e7d0c5ffa34a144aaf1bcb5b9f2c87673ff0c76e
+  - git_url: https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_pr.git
+    git_rev: main
+    folder: gf180mcu-pdk/gf180mcu_fd_pr
+    git_depth: 1
+  - git_url: https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_io.git
+    git_rev: main
+    git_depth: 1
+    folder: gf180mcu-pdk/gf180mcu_fd_io
+  - git_url: https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu7t5v0.git
+    git_rev: main
+    git_depth: 1
+    folder: gf180mcu-pdk/gf180mcu_fd_sc_mcu7t5v0
+  - git_url: https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu9t5v0.git
+    git_rev: main
+    git_depth: 1
+    folder: gf180mcu-pdk/gf180mcu_fd_sc_mcu9t5v0
+  - git_url: https://github.com/google/globalfoundries-pdk-ip-gf180mcu_fd_ip_sram.git
+    git_rev: main
+    folder: gf180mcu-pdk/gf180mcu_fd_ip_sram
+    git_depth: 1
 
 build:
   noarch: generic
@@ -29,29 +52,59 @@ build:
   string: {{ environ.get('DATE_STR') }}
   script_env:
     - CI
-    
-requirements:
-  build:
-    - autoconf
-    - automake
-    - make
-  host:
-    - python
-    - pip
-    - typing_inspect
-    - marshmallow
-    - marshmallow-enum    
-    - magic
-  run_constrained:
-    - {{ pin_compatible('magic', min_pin='x.x.x', max_pin='x.x.x') }}
 
-test:
-  commands:
-    - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_sc_hd
-    - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_sc_hvl
-    - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_io
-    - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_pr
-  
+outputs:
+  - name: open_pdks.sky130a
+    requirements:
+      build:
+        - autoconf
+        - automake
+        - make
+      host:
+        - python
+        - pip
+        - typing_inspect
+        - marshmallow
+        - marshmallow-enum
+        - magic
+      run_constrained:
+        - {{ pin_compatible('magic', min_pin='x.x.x', max_pin='x.x.x') }}
+    script: build_sky130.sh
+    files:
+      - $PREFIX/share/pdk/sky130A
+    test:
+      commands:
+        - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_sc_hd
+        - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_sc_hvl
+        - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_io
+        - test -d $PREFIX/share/pdk/sky130A/libs.ref/sky130_fd_pr
+  - name: open_pdks.gf180mcuc
+    requirements:
+      build:
+        - autoconf
+        - automake
+        - make
+      host:
+        - python
+        - pip
+        - magic
+      run_constrained:
+        - {{ pin_compatible('magic', min_pin='x.x.x', max_pin='x.x.x') }}
+    script: build_gf180.sh
+    files:
+      - $PREFIX/share/pdk/gf180mcu
+    test:
+      commands:
+        - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_io
+        - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_sc_mcu7t5v0
+        - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_sc_mcu9t5v0
+        - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_ip_sram
+        # from gf180mcu_fd_pr
+        - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/ngspice
+        - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/xyce
+        - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout
+        - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem
+
 about:
   home: http://opencircuitdesign.com/open_pdks/
   license: Apache-2.0
