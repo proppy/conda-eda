@@ -745,13 +745,24 @@ jobs:
     runs-on: "ubuntu-20.04"
     needs: ["magic-linux"]
     env:
-      PACKAGE: "misc/open_pdks"
+      PACKAGE: "misc/open_pdks.sky130a"
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v3
       - uses: ./ci
 
   #67
+  open_pdks-linux:
+    runs-on: "ubuntu-20.04"
+    needs: ["magic-linux"]
+    env:
+      PACKAGE: "misc/open_pdks.gf180mcuc"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./ci
+
+  #68
   openroad-linux:
     runs-on: "ubuntu-20.04"
     env:
@@ -761,7 +772,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./ci
 
-  #68
+  #69
   xls-linux:
     # uses older ubuntu for better compat:
     # https://github.com/hdl/conda-eda/issues/199
