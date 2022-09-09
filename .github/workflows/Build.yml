@@ -741,7 +741,7 @@ jobs:
       - uses: ./ci
 
   #66
-  open_pdks-linux:
+  open_pdks-linux-sky130a:
     runs-on: "ubuntu-20.04"
     needs: ["magic-linux"]
     env:
@@ -752,7 +752,7 @@ jobs:
       - uses: ./ci
 
   #67
-  open_pdks-linux:
+  open_pdks-linux-gf180mcuc:
     runs-on: "ubuntu-20.04"
     needs: ["magic-linux"]
     env:
