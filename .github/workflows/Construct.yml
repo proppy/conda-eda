@@ -54,4 +54,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: "openlane.sky130a installer"
-          path: openlane.sky130a-0-Linux-x86_64.sh
+          path: |
+            /home/runner/work/conda-eda/conda-eda/openlane-sky130a-0-Linux-x86_64.sh
