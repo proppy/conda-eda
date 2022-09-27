@@ -65,3 +65,13 @@ jobs:
           name: "openlane-sky130a-installer"
           path: |
             /home/runner/work/conda-eda/conda-eda/openlane-sky130a-0-Linux-x86_64.sh
+
+  release:
+    runs-on: "ubuntu-18.04"
+    steps:
+      - uses: actions/download-artifact@v3
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            openlane-*-Linux-x86_64.sh
