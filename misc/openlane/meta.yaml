@@ -29,9 +29,9 @@ requirements:
     - click
     - pyyaml
 
-test:
-  commands:
-    - flow.tcl -design inverter -ignore_mismatches
+# test:
+#   commands:
+#     - flow.tcl -design inverter -ignore_mismatches
 
 about:
   home: https://github.com/The-OpenROAD-Project/OpenLane
