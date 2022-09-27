@@ -73,7 +73,7 @@ jobs:
       - run: |
           git config --local user.name conda-eda@bot
           git config --local user.email conda-eda@bot
-          TAG=$(git describe --all)
+          TAG=$(git describe --tags)
           git tag $TAG
           git push origin "HEAD:refs/tags/$TAG"
           echo "TAG=$TAG" >> $GITHUB_ENV
@@ -83,4 +83,4 @@ jobs:
           name: ${{ env.TAG }}
           tag_name: ${{ env.TAG }}
           files: |
-            openlane-*-Linux-x86_64.sh
+            openlane-sky130a-installer/*.sh
