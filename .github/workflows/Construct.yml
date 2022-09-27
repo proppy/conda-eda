@@ -14,12 +14,16 @@ jobs:
       PACKAGE: "misc/openlane"
       OS_NAME: "linux"
     steps:
-      - uses: actions/checkout@v3
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
       - name: 'Install tcllib'
         run: |
           sudo apt update
           sudo apt install -y tcllib
+
       - uses: ./ci
+
       - name: populate conda-env cache
         uses: actions/cache@v3
         with:
@@ -31,16 +35,21 @@ jobs:
       - openlane-linux
     runs-on: "ubuntu-18.04"
     steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
       - name: restore openlane conda-env cache
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
           key: ${{ runner.os }}-openlane-${{ github.run_id }}
+
       - name: construct installer
         run: |
           ln -s /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld /tmp/conda-bld
           /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/conda install constructor
           /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/constructor constructor/openlane.sky130a/
+
       - name: archive openlane.sky130a installer
         uses: actions/upload-artifact@v3
         with:
