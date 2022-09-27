@@ -3,6 +3,9 @@ name: Build installers
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write    
+
 defaults:
   run:
     shell: bash
@@ -30,7 +33,7 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
           key: ${{ runner.os }}-openlane-${{ github.run_id }}
 
-  constructor:
+  openlane-sky130a-installer:
     needs:
       - openlane-linux
     runs-on: "ubuntu-18.04"
@@ -44,15 +47,21 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
           key: ${{ runner.os }}-openlane-${{ github.run_id }}
 
+      - name: restore sky130a conda-env cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
+          key: ${{ runner.os }}-sky130a-${{ github.run_id }}
+
       - name: construct installer
         run: |
           ln -s /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld /tmp/conda-bld
           /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/conda install constructor
-          /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/constructor constructor/openlane.sky130a/
+          /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/constructor installer/openlane.sky130a/
 
       - name: archive openlane.sky130a installer
         uses: actions/upload-artifact@v3
         with:
-          name: "openlane.sky130a installer"
+          name: "openlane-sky130a-installer"
           path: |
             /home/runner/work/conda-eda/conda-eda/openlane-sky130a-0-Linux-x86_64.sh

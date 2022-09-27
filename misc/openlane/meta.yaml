@@ -2,7 +2,7 @@
 {% set version = '%s_%04i_%s'|format(GIT_DESCRIBE_TAG, GIT_DESCRIBE_NUMBER|int, GIT_DESCRIBE_HASH or 'gUNKNOWN') %}
 
 package:
-  name: openlane.sky130a
+  name: openlane
   version: {{ version }}
 
 source:
@@ -25,13 +25,14 @@ requirements:
     - magic
     - netgen
     - yosys
-    - open_pdks.sky130a
     - click
     - pyyaml
 
 test:
+  requires:
+    - open_pdks.sky130a
   commands:
-    - flow.tcl -design inverter
+    - PDK=sky130A STD_CELL_LIBRARY=sky130_fd_sc_hd STD_CELL_LIBRARY_OPT=sky130_fd_sc_hd flow.tcl -design inverter
 
 about:
   home: https://github.com/The-OpenROAD-Project/OpenLane
