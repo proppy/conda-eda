@@ -31,7 +31,7 @@ requirements:
 
 # test:
 #   commands:
-#     - flow.tcl -design inverter -ignore_mismatches
+#     - flow.tcl -design inverter
 
 about:
   home: https://github.com/The-OpenROAD-Project/OpenLane
