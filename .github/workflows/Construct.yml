@@ -65,6 +65,9 @@ jobs:
       - openlane-sky130a-installer
     runs-on: "ubuntu-18.04"
     steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
       - uses: actions/download-artifact@v3
         
       - run: |
