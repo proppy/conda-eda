@@ -47,12 +47,6 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
           key: ${{ runner.os }}-openlane-${{ github.run_id }}
 
-      - name: restore sky130a conda-env cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
-          key: ${{ runner.os }}-sky130a-${{ github.run_id }}
-
       - name: construct installer
         run: |
           ln -s /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld /tmp/conda-bld
