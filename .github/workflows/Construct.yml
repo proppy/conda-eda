@@ -41,7 +41,7 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
           key: ${{ runner.os }}-yosys-${{ github.run_id }}
 
-  open_pdks.sky130a-linux:
+  open_pdks-sky130a-linux:
     runs-on: "ubuntu-18.04"
     needs: ["magic-linux"]
     env:
@@ -56,7 +56,7 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
           key: ${{ runner.os }}-sky130a-${{ github.run_id }}
 
-  open_pdks.gf180mcuc-linux:
+  open_pdks-gf180mcuc-linux:
     runs-on: "ubuntu-18.04"
     needs: ["magic-linux"]
     env:
@@ -135,8 +135,8 @@ jobs:
     needs:
       - magic-linux
       - yosys-linux-py37
-      - open_pdks.sky130a-linux
-      - open_pdks.gf180mcuc-linux
+      - open_pdks-sky130a-linux
+      - open_pdks-gf180mcuc-linux
       - openroad-linux
       - xls-linux
       - netgen-linux
