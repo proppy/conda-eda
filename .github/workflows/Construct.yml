@@ -38,7 +38,7 @@ jobs:
           key: ${{ runner.os }}-openlane-${{ github.run_id }}
       - run: |
           ln -s /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld /tmp/conda-bld
-          source /home/runner/work/conda-eda/conda-eda/workdir/conda-env/
+          source /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/activate
           conda install constructor
       - run: |
           constructor constructor/openlane.sky130a/
