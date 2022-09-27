@@ -17,7 +17,8 @@ git archive HEAD | tar -xv -C $PREFIX/share/openlane
 # define system and pdk variables
 mkdir -p $PREFIX/share/openlane/install
 cp -a $RECIPE_DIR/env.tcl $PREFIX/share/openlane/install
-mkdir -p $PREFIX/share/openlane/install/versions
+mkdir -p $PREFIX/share/openlane/install/build/versions
+touch $PREFIX/share/openlane/install/build/versions/keep-directory
 # override default configuration to disable missing tools
 cp -a $RECIPE_DIR/disable-missing-tools.tcl $PREFIX/share/openlane/configuration/disable-missing-tools.tcl
 echo -n ' disable-missing-tools.tcl' >> $PREFIX/share/openlane/configuration/load_order.txt
