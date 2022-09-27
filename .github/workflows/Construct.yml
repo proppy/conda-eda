@@ -36,11 +36,13 @@ jobs:
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
           key: ${{ runner.os }}-openlane-${{ github.run_id }}
-      - run: |
+      - name: setup conda
+        uses: conda-incubator/setup-miniconda@v2
+      - name: construct installer
+        run: |
           ln -s /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld /tmp/conda-bld
-          /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/conda install constructor
-      - run: |
-          /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/constructor constructor/openlane.sky130a/
+          conda install constructor
+          constructor constructor/openlane.sky130a/
       - name: archive openlane.sky130a installer
         uses: actions/upload-artifact@v3
         with:
