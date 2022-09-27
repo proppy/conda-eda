@@ -61,11 +61,23 @@ jobs:
             /home/runner/work/conda-eda/conda-eda/openlane-sky130a-0-Linux-x86_64.sh
 
   release:
+    needs:
+      - openlane-sky130a-installer
     runs-on: "ubuntu-18.04"
     steps:
       - uses: actions/download-artifact@v3
+        
+      - run: |
+          git config --local user.name conda-eda@bot
+          git config --local user.email conda-eda@bot
+          TAG=$(git describe)
+          git tag $TAG
+          git push origin "HEAD:refs/tags/$TAG"
+          echo "TAG=$TAG" >> $GITHUB_ENV
 
       - uses: softprops/action-gh-release@v1
         with:
+          name: ${{ env.TAG }}
+          tag_name: ${{ env.TAG }}
           files: |
             openlane-*-Linux-x86_64.sh
