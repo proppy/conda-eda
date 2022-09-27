@@ -45,7 +45,7 @@ jobs:
     runs-on: "ubuntu-18.04"
     needs: ["magic-linux"]
     env:
-      PACKAGE: "misc/open_pdks.sky130a"
+      PACKAGE: "misc/open_pdks/sky130a"
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v3
@@ -60,7 +60,7 @@ jobs:
     runs-on: "ubuntu-18.04"
     needs: ["magic-linux"]
     env:
-      PACKAGE: "misc/open_pdks.gf180mcuc"
+      PACKAGE: "misc/open_pdks/gf180mcuc"
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v3
