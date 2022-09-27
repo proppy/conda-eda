@@ -1,0 +1,203 @@
+name: Build installers
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  magic-linux:
+    runs-on: "ubuntu-18.04"
+    env:
+      PACKAGE: "misc/magic"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Install csh'
+        run: |
+          sudo apt update
+          sudo apt install -y csh
+      - uses: ./ci
+      - name: populate conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-magic-${{ github.run_id }}
+
+  yosys-linux-py37:
+    runs-on: "ubuntu-18.04"
+    env:
+      PACKAGE: "syn/yosys"
+      OS_NAME: "linux"
+      PYTHON_VERSION: "3.7"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./ci
+      - name: populate conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-yosys-${{ github.run_id }}
+
+  open_pdks.sky130a-linux:
+    runs-on: "ubuntu-18.04"
+    needs: ["magic-linux"]
+    env:
+      PACKAGE: "misc/open_pdks.sky130a"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./ci
+      - name: populate conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-sky130a-${{ github.run_id }}
+
+  open_pdks.gf180mcuc-linux:
+    runs-on: "ubuntu-18.04"
+    needs: ["magic-linux"]
+    env:
+      PACKAGE: "misc/open_pdks.gf180mcuc"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./ci
+      - name: populate conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-gf180mcuc-${{ github.run_id }}
+
+  openroad-linux:
+    runs-on: "ubuntu-18.04"
+    env:
+      PACKAGE: "pnr/openroad"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./ci
+      - name: populate conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-openroad-${{ github.run_id }}
+
+  xls-linux:
+    runs-on: "ubuntu-18.04"
+    env:
+      PACKAGE: "hls/xls"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./ci
+      - name: populate conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-xls-${{ github.run_id }}
+
+  netgen-linux:
+    runs-on: "ubuntu-18.04"
+    env:
+      PACKAGE: "misc/netgen"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./ci
+      - name: populate conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-netgen-${{ github.run_id }}
+
+  openlane-linux:
+    runs-on: "ubuntu-18.04"
+    env:
+      PACKAGE: "misc/openlane"
+      OS_NAME: "linux"
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Install tcllib'
+        run: |
+          sudo apt update
+          sudo apt install -y tcllib
+      - uses: ./ci
+      - name: populate conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-openlane-${{ github.run_id }}
+
+  constructor:
+    needs:
+      - magic-linux
+      - yosys-linux-py37
+      - open_pdks.sky130a-linux
+      - open_pdks.gf180mcuc-linux
+      - openroad-linux
+      - xls-linux
+      - netgen-linux
+      - openlane-linux
+    runs-on: "ubuntu-18.04"
+    steps:
+      - name: restore magic conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-magic-${{ github.run_id }}
+      - name: restore yosys conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-yosys-${{ github.run_id }}          
+      - name: restore open_pdks.sky130a conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-open_pdks.sky130a-${{ github.run_id }}          
+      - name: restore open_pdks.gf180mcuc conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-open_pdks.gf180mcuc-${{ github.run_id }}          
+      - name: restore openroad conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-openroad-${{ github.run_id }}          
+      - name: restore xls conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-xls-${{ github.run_id }}          
+      - name: restore netgen conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-netgen-${{ github.run_id }}          
+      - name: restore openlane conda-bld cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld
+          key: ${{ runner.os }}-openlane-${{ github.run_id }}
+      - run: |
+          ln -s /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld /tmp/conda-bld
+          source /home/runner/work/conda-eda/conda-eda/workdir/conda-env/
+          conda install constructor
+      - run: |
+          constructor constructor/openlane.sky130a/
+      - name: archive openlane.sky130a installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: "openlane.sky130a installer"
+          path: openlane.sky130a-0-Linux-x86_64.sh
+      - run: |
+          constructor constructor/openlane.gf180mcuc/
+      - name: archive openlane.gf180mcuc installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: "openlane.gf180mcuc installer"
+          path: openlane.gf180mcuc-0-Linux-x86_64.sh
