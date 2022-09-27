@@ -38,10 +38,9 @@ jobs:
           key: ${{ runner.os }}-openlane-${{ github.run_id }}
       - run: |
           ln -s /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld /tmp/conda-bld
-          source /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/activate
-          conda install constructor
+          /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/conda install constructor
       - run: |
-          constructor constructor/openlane.sky130a/
+          /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/constructor constructor/openlane.sky130a/
       - name: archive openlane.sky130a installer
         uses: actions/upload-artifact@v3
         with:
