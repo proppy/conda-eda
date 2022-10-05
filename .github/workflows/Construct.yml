@@ -12,7 +12,7 @@ defaults:
 
 jobs:
   openlane-linux:
-    runs-on: "ubuntu-18.04"
+    runs-on: self-hosted
     env:
       PACKAGE: "misc/openlane"
       OS_NAME: "linux"
@@ -34,7 +34,7 @@ jobs:
           key: ${{ runner.os }}-openlane-${{ github.run_id }}          
 
   gf180mcuc-linux:
-    runs-on: "ubuntu-18.04"
+    runs-on: self-hosted
     env:
       PACKAGE: "misc/open_pdks/gf180mcuc"
       OS_NAME: "linux"
@@ -61,7 +61,7 @@ jobs:
   openlane-sky130a-installer:
     needs:
       - openlane-linux
-    runs-on: "ubuntu-18.04"
+    runs-on: self-hosted
     steps:
       - name: checkout conda-eda
         uses: actions/checkout@v3
@@ -117,7 +117,7 @@ jobs:
     needs:
       - openlane-sky130a-installer
       - openlane-gf180mcuc-installer
-    runs-on: "ubuntu-18.04"
+    runs-on: self-hosted
     steps:
       - name: checkout conda-eda
         uses: actions/checkout@v3
