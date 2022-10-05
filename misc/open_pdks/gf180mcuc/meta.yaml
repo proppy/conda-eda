@@ -11,6 +11,7 @@ source:
     patches:
       - disable-link-targets.patch
       - use-sources-from-conda.patch
+      - disable-osu.patch
   - git_url: https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_pr.git
     git_rev: main
     folder: gf180mcu-pdk/gf180mcu_fd_pr
