@@ -31,7 +31,25 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
-          key: ${{ runner.os }}-openlane-${{ github.run_id }}
+          key: ${{ runner.os }}-openlane-${{ github.run_id }}          
+
+  gf180mcuc-linux:
+    runs-on: "ubuntu-18.04"
+    env:
+      PACKAGE: "misc/open_pdks/gf180mcuc"
+      OS_NAME: "linux"
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: ./ci
+
+      - name: populate conda-env cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
+          key: ${{ runner.os }}-gf180mcuc-${{ github.run_id }}          
+
 
   openlane-sky130a-installer:
     needs:
@@ -60,9 +78,38 @@ jobs:
           path: |
             /home/runner/work/conda-eda/conda-eda/openlane-sky130a-0-Linux-x86_64.sh
 
+  openlane-gf180mcu-installer:
+    needs:
+      - openlane-linux
+      - gf180mcuc-linux
+    runs-on: "ubuntu-18.04"
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - name: restore openlane conda-env cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
+          key: ${{ runner.os }}-openlane-${{ github.run_id }}
+
+      - name: construct installer
+        run: |
+          ln -s /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld /tmp/conda-bld
+          /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/conda install constructor
+          /home/runner/work/conda-eda/conda-eda/workdir/conda-env/bin/constructor installer/openlane.gf180mcuc/
+
+      - name: archive openlane.gf180mcuc installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: "openlane-gf180mcuc-installer"
+          path: |
+            /home/runner/work/conda-eda/conda-eda/openlane-sky130a-0-Linux-x86_64.sh
+
   release:
     needs:
       - openlane-sky130a-installer
+      - openlane-gf180mcuc-installer
     runs-on: "ubuntu-18.04"
     steps:
       - name: checkout conda-eda
@@ -85,4 +132,4 @@ jobs:
           name: ${{ env.TAG }}
           tag_name: ${{ env.TAG }}
           files: |
-            openlane-sky130a-installer/*.sh
+            openlane-*-installer/*.sh
