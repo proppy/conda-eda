@@ -16,21 +16,6 @@
 
 set -ex
 
-# sanity check
-test -d $SRC_DIR/gf180mcu-pdk/gf180mcu_fd_pr
-test -d $SRC_DIR/gf180mcu-pdk/gf180mcu_fd_io
-test -d $SRC_DIR/gf180mcu-pdk/gf180mcu_fd_sc_mcu7t5v0
-test -d $SRC_DIR/gf180mcu-pdk/gf180mcu_fd_sc_mcu9t5v0    
-test -d $SRC_DIR/gf180mcu-pdk/gf180mcu_fd_ip_sram
-
-# extract variant name from package name
-VARIANT=${PKG_NAME#open_pdks.gf180mcu}
-VARIANT=${VARIANT^^}
-
-# --enable-gf180-pdk: point to current checkout
-# --with-gf180-variants: use specified variant 
-./configure --prefix=$PREFIX \
-  --enable-gf180mcu-pdk=$SRC_DIR/gf180mcu-pdk \
-  --with-gf180mcu-variants=$VARIANT
-make V=1
-make V=1 install
+curl -L -O https://github.com/efabless/volare/releases/download/gf180mcu-120b0bd69c745825a0b8b76f364043a1cd08bb6a/default.tar.xz
+mkdir -p $PREFIX/usr/share/pdk/ 
+tar -C $PREFIX/usr/share/pdk -xvf default.tar.xz 
