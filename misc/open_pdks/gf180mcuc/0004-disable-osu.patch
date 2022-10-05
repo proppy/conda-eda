@@ -1,11 +1,20 @@
+From 7ec39d87adec4c29f35128390e560de19849f6b9 Mon Sep 17 00:00:00 2001
+From: Johan Euphrosine <proppy@google.com>
+Date: Wed, 5 Oct 2022 18:11:31 +0900
+Subject: [PATCH 4/4] disable osu
+
+---
+ gf180mcu/Makefile.in | 68 ++++----------------------------------------
+ 1 file changed, 5 insertions(+), 63 deletions(-)
+
 diff --git a/gf180mcu/Makefile.in b/gf180mcu/Makefile.in
-index 011972a..10c8356 100644
+index 6da5a81..e4f66df 100644
 --- a/gf180mcu/Makefile.in
 +++ b/gf180mcu/Makefile.in
-@@ -155,11 +155,9 @@ GF180MCU_IO_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_io
+@@ -136,11 +136,9 @@ GF180MCU_IO_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_io
  GF180MCU_SC_7T5V0_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_sc_mcu7t5v0
  GF180MCU_SC_9T5V0_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_sc_mcu9t5v0
- GF180MCU_SRAM_PATH = @GF180MCU_SOURCE_PATH@/gf180mcu_fd_ip_sram
+ GF180MCU_SRAM_PATH = 
 -GF180MCU_OSU_SC_PATH = @GF180MCU_OSU_SC_PATH@
  
  # Path to GF180MCU library sources
@@ -14,7 +23,7 @@ index 011972a..10c8356 100644
  
  # Names of library repositories
  PDK_LIB_PR =       ${PDK_URL}/globalfoundries-pdk-libs-gf180mcu_fd_pr
-@@ -167,7 +165,6 @@ PDK_LIB_IO =       ${PDK_URL}/globalfoundries-pdk-libs-gf180mcu_fd_io
+@@ -148,7 +146,6 @@ PDK_LIB_IO =       ${PDK_URL}/globalfoundries-pdk-libs-gf180mcu_fd_io
  PDK_LIB_SC_7T5V0 = ${PDK_URL}/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu7t5v0
  PDK_LIB_SC_9T5V0 = ${PDK_URL}/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu9t5v0
  PDK_LIB_SRAM =     ${PDK_URL}/globalfoundries-pdk-ip-gf180mcu_fd_ip_sram
@@ -22,7 +31,7 @@ index 011972a..10c8356 100644
  
  # NOTE:  Install destination is the git repository of the technology platform.
  # Once updated in git, the git project can be distributed to all hosts.
-@@ -436,7 +433,7 @@ reference: ${TECH}.json
+@@ -413,7 +410,7 @@ reference: ${TECH}.json
  all: $(foreach var, ${VARIANTS}, all-$(var))
  
  # Handle prerequisites
@@ -31,7 +40,7 @@ index 011972a..10c8356 100644
  
  pr-repo:
  	if test "x${GF180MCU_PR_PATH}" != "x" ; then \
-@@ -488,18 +485,8 @@ sram-repo:
+@@ -465,18 +462,8 @@ sram-repo:
  		fi ; \
  	fi
  
@@ -51,7 +60,7 @@ index 011972a..10c8356 100644
  
  update-pr-repo:
  	if test "x${GF180MCU_PR_PATH}" != "x" ; then \
-@@ -531,12 +518,6 @@ update-sram-repo:
+@@ -508,12 +495,6 @@ update-sram-repo:
  		../scripts/update.sh ${GF180MCU_SRAM_PATH} ; \
  	fi
  
@@ -64,7 +73,7 @@ index 011972a..10c8356 100644
  all-%: prerequisites
  	echo "Starting gf180mcu$* PDK staging on "`date` > ${GF180MCU$*}_make.log
  	${MAKE} general-$*
-@@ -688,11 +669,11 @@ openlane-%: openlane/config.tcl openlane/gf180mcu_fd_sc_mcu7t5v0/config.tcl open
+@@ -665,11 +646,11 @@ openlane-%: openlane/config.tcl openlane/gf180mcu_fd_sc_mcu7t5v0/config.tcl open
  		${OPENLANE_STAGING_$*}/rules.openrcx.gf180mcu$*.max.magic ;\
  	fi
  
@@ -79,7 +88,7 @@ index 011972a..10c8356 100644
  
  primitive-build-%:
  	if test -d ${GF180MCU_PR_PATH} ; then \
-@@ -724,12 +705,6 @@ sram-build-%:
+@@ -701,12 +682,6 @@ sram-build-%:
  		make sram-$* ;\
  	fi
  
@@ -92,7 +101,7 @@ index 011972a..10c8356 100644
  primitive-%:
          # Install tech LEF and primitive devices from vendor files
  	${STAGE} -source ${GF180MCU_PR_PATH} \
-@@ -854,39 +829,6 @@ digital-7t5v0-%:
+@@ -831,39 +806,6 @@ digital-7t5v0-%:
  		-library digital gf180mcu_fd_sc_mcu7t5v0 2>&1 | \
  		tee -a ${GF180MCU$*}_make.log
  
@@ -132,3 +141,6 @@ index 011972a..10c8356 100644
  io-%:
          # Install I/O cells from vendor files
  	# Note:  Do not use GF LEF views.  Annotate only.  LEF is being renamed
+-- 
+2.30.2
+

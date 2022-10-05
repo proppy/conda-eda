@@ -9,9 +9,10 @@ source:
   - git_url: https://github.com/RTimothyEdwards/open_pdks.git
     git_rev: master
     patches:
-      - disable-link-targets.patch
-      - use-sources-from-conda.patch
-      - disable-osu.patch
+      - 0001-disable-link-target.patch
+      - 0002-use-conda-source.patch
+      - 0003-disable-sram.patch
+      - 0004-disable-osu.patch
   - git_url: https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_pr.git
     git_rev: main
     folder: gf180mcu-pdk/gf180mcu_fd_pr
