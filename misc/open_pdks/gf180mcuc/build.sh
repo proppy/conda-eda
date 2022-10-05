@@ -17,4 +17,4 @@
 set -ex
 
 mkdir -p $PREFIX/usr/share/pdk/ 
-tar -C $PREFIX/usr/share/pdk -xvf default.tar.xz 
+tar -C $PREFIX/usr/share/pdk -xvf $SRC_DIR/default.tar.xz 
