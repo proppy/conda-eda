@@ -78,7 +78,7 @@ jobs:
           path: |
             /home/runner/work/conda-eda/conda-eda/openlane-sky130a-0-Linux-x86_64.sh
 
-  openlane-gf180mcu-installer:
+  openlane-gf180mcuc-installer:
     needs:
       - openlane-linux
       - gf180mcuc-linux
