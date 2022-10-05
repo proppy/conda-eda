@@ -5,10 +5,6 @@ package:
   name: open_pdks.gf180mcuc
   version: {{ version }}
 
-source:
-  - url: https://github.com/efabless/volare/releases/download/gf180mcu-120b0bd69c745825a0b8b76f364043a1cd08bb6a/default.tar.xz
-    sha256: 250bab34f47e4597a83cbc0fb77e5552776dc405195b50e1e3a6474d71e2a44b
-
 build:
   noarch: generic
   # number: 202202031935

@@ -16,5 +16,6 @@
 
 set -ex
 
+curl -L -O https://github.com/efabless/volare/releases/download/gf180mcu-120b0bd69c745825a0b8b76f364043a1cd08bb6a/default.tar.xz
 mkdir -p $PREFIX/usr/share/pdk/ 
-tar -C $PREFIX/usr/share/pdk -xvf $SRC_DIR/default.tar.xz 
+tar -C $PREFIX/usr/share/pdk -xvf default.tar.xz 
