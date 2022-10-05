@@ -84,6 +84,13 @@ jobs:
       - gf180mcuc-linux
     runs-on: "ubuntu-18.04"
     steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+
       - name: checkout conda-eda
         uses: actions/checkout@v3
 
