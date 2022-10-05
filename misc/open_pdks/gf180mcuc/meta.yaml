@@ -6,32 +6,8 @@ package:
   version: {{ version }}
 
 source:
-  - git_url: https://github.com/RTimothyEdwards/open_pdks.git
-    git_rev: master
-    patches:
-      - 0001-disable-link-target.patch
-      - 0002-use-conda-source.patch
-      - 0003-disable-osu.patch
-  - git_url: https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_pr.git
-    git_rev: main
-    folder: gf180mcu-pdk/gf180mcu_fd_pr
-    git_depth: 1
-  - git_url: https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_io.git
-    git_rev: main
-    git_depth: 1
-    folder: gf180mcu-pdk/gf180mcu_fd_io
-  - git_url: https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu7t5v0.git
-    git_rev: main
-    git_depth: 1
-    folder: gf180mcu-pdk/gf180mcu_fd_sc_mcu7t5v0
-  - git_url: https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_sc_mcu9t5v0.git
-    git_rev: main
-    git_depth: 1
-    folder: gf180mcu-pdk/gf180mcu_fd_sc_mcu9t5v0
-  - git_url: https://github.com/google/globalfoundries-pdk-ip-gf180mcu_fd_ip_sram.git
-    git_rev: main
-    folder: gf180mcu-pdk/gf180mcu_fd_ip_sram
-    git_depth: 1
+  - url: https://github.com/efabless/volare/releases/download/gf180mcu-120b0bd69c745825a0b8b76f364043a1cd08bb6a/default.tar.xz
+    sha256: 250bab34f47e4597a83cbc0fb77e5552776dc405195b50e1e3a6474d71e2a44b
 
 build:
   noarch: generic
