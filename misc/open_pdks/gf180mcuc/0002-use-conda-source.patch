@@ -1,7 +1,7 @@
 From 4dbd8131843b9bfb7c639cd31b9092a9f75ba3c0 Mon Sep 17 00:00:00 2001
 From: Johan Euphrosine <proppy@google.com>
 Date: Wed, 5 Oct 2022 14:10:13 +0900
-Subject: [PATCH 2/4] use conda source
+Subject: [PATCH 2/3] use conda source
 
 ---
  gf180mcu/Makefile.in | 10 +++++-----
