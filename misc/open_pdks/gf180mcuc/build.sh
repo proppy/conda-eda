@@ -22,7 +22,6 @@ test -d $SRC_DIR/gf180mcu-pdk/gf180mcu_fd_io
 test -d $SRC_DIR/gf180mcu-pdk/gf180mcu_fd_sc_mcu7t5v0
 test -d $SRC_DIR/gf180mcu-pdk/gf180mcu_fd_sc_mcu9t5v0    
 test -d $SRC_DIR/gf180mcu-pdk/gf180mcu_fd_ip_sram
-test -d $SRC_DIR/gf180mcu-pdk/gf180mcu_osu_sc
 
 # extract variant name from package name
 VARIANT=${PKG_NAME#open_pdks.gf180mcu}
