@@ -1,6 +1,9 @@
 name: Build installers
 
 on:
+  push:
+    branch:
+      - 'main'
   workflow_dispatch:
 
 permissions:
