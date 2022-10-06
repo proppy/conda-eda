@@ -82,8 +82,13 @@ jobs:
     env:
       OPENLANE_REV: ${{ needs.openlane-linux.outputs.OPENLANE_REV }}
     runs-on: "ubuntu-20.04"
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
 
       - name: restore openlane cache
         uses: actions/cache@v3
@@ -114,8 +119,13 @@ jobs:
       OPENLANE_REV: ${{ needs.openlane-linux.outputs.OPENLANE_REV }}
       GF180MCUC_REV: ${{ needs.gf180mcuc-linux.outputs.GF180MCUC_REV }}
     runs-on: "ubuntu-20.04"
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
 
       - name: restore openlane cache
         uses: actions/cache@v3
