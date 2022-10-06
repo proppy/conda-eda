@@ -1,4 +1,4 @@
-name: openlane-sky130a
+name: openlane-gf180mcuc
 version: 0
 
 channels:
