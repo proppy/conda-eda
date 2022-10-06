@@ -44,7 +44,7 @@ jobs:
 
       #- uses: ./ci
       - run: |
-          mkdir /home/runner/work/conda-eda/conda-eda/workdir/conda-env
+          mkdir -p /home/runner/work/conda-eda/conda-eda/workdir/conda-env
           touch /home/runner/work/conda-eda/conda-eda/workdir/conda-env/foo
 
       - name: populate conda-env cache
