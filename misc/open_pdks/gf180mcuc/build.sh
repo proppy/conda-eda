@@ -16,6 +16,6 @@
 
 set -ex
 
-curl -L -O https://github.com/proppy/volare-gf180mcu-wip/releases/tag/gf180mcu-d7c3a52_465f1da_3d1aed6
+curl -L -O https://github.com/proppy/volare-gf180mcu-wip/releases/download/gf180mcu-d7c3a52_465f1da_3d1aed6/default.tar.xz
 mkdir -p $PREFIX/usr/share/pdk/ 
 tar -C $PREFIX/usr/share/pdk -xvf default.tar.xz 
