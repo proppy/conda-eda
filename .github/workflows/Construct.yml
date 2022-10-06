@@ -42,17 +42,15 @@ jobs:
       - name: checkout conda-eda
         uses: actions/checkout@v3
 
-      #- uses: ./ci
-      - run: |
-          mkdir -p /home/runner/work/conda-eda/conda-eda/workdir/conda-env
-          touch /home/runner/work/conda-eda/conda-eda/workdir/conda-env/foo
-
-      - name: populate conda-env cache
+      - name: restore gf180mcuc cache
+        id: cache-gf180mcuc
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
-          key: ${{ runner.os }}-gf180mcuc-${{ github.run_id }}          
+          key: ${{ runner.os }}-gf180mcuc-d7c3a52_465f1da_3d1aed6
 
+      - uses: ./ci
+        if: steps.cache-gf180mcuc.outputs.cache-hit != 'true'
 
   openlane-sky130a-installer:
     needs:
@@ -100,11 +98,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
-          key: ${{ runner.os }}-gf180mcuc-${{ github.run_id }}
+          key: ${{ runner.os }}-gf180mcuc-d7c3a52_465f1da_3d1aed6
 
-      - run: |
-          find /home/runner/work/conda-eda/conda-eda/workdir/conda-env
-               
+      - name: debug
+        run: |
+          find /home/runner/work/conda-eda/conda-eda/workdir/conda-env               
 
       - name: construct installer
         run: |
