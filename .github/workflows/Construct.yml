@@ -91,7 +91,6 @@ jobs:
         run: |
           mkdir -p /tmp/conda-bld/{linux-64,noarch}
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openlane-*.tar.bz2 /tmp/conda-bld/linux-64/
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           conda install constructor
           constructor installer/openlane.sky130a/
