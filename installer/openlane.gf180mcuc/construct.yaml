@@ -9,7 +9,7 @@ specs:
   - python 3.7*
   - conda
   - openlane
-  - open_pdks.gf180mcuc
+  #- open_pdks.gf180mcuc
   - xls
 
 channels_remap:

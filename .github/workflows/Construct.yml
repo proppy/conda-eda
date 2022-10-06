@@ -42,7 +42,10 @@ jobs:
       - name: checkout conda-eda
         uses: actions/checkout@v3
 
-      - uses: ./ci
+      #- uses: ./ci
+      - run: |
+          mkdir /home/runner/work/conda-eda/conda-eda/workdir/conda-env
+          touch /home/runner/work/conda-eda/conda-eda/workdir/conda-env/foo
 
       - name: populate conda-env cache
         uses: actions/cache@v3
@@ -92,6 +95,16 @@ jobs:
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
           key: ${{ runner.os }}-openlane-${{ github.run_id }}
+
+      - name: restore gf180mcuc conda-env cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env
+          key: ${{ runner.os }}-gf180mcuc-${{ github.run_id }}
+
+      - run: |
+          find /home/runner/work/conda-eda/conda-eda/workdir/conda-env
+               
 
       - name: construct installer
         run: |
