@@ -16,25 +16,32 @@ defaults:
 jobs:
   openlane-linux:
     outputs:
-      OPENLANE_REV: ${{ steps.env.outputs.VOLARE_PATH }}
+      OPENLANE_REV: ${{ steps.env.outputs.OPENLANE_REV }}
+      CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
     runs-on: "ubuntu-20.04"
     env:
       PACKAGE: "misc/openlane"
       OS_NAME: "linux"
     steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
       - name: env
         id: env 
         run: |
           OPENLANE_REV=$(git ls-remote https://github.com/The-OpenROAD-Project/OpenLane.git HEAD | cut -f 1)
           echo "OPENLANE_REV=$OPENLANE_REV" >> $GITHUB_ENV
           echo "::set-output name=OPENLANE_REV::$OPENLANE_REV"
+          CONDA_EDA_REV=$(git rev-parse HEAD)
+          echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
+          echo "::set-output name=CONDA_EDA_REV::$CONDA_EDA_REV"
    
       - name: restore openlane cache
         id: cache-openlane
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openlane-*.tar.bz2
-          key: ${{ runner.os }}-openlane-${{ env.OPENLANE_REV }}         
+          key: ${{ runner.os }}-openlane-${{ env.OPENLANE_REV }}-${{ env.CONDA_EDA_REV }}      
 
       - name: checkout conda-eda
         uses: actions/checkout@v3
@@ -81,6 +88,7 @@ jobs:
       - openlane-linux
     env:
       OPENLANE_REV: ${{ needs.openlane-linux.outputs.OPENLANE_REV }}
+      CONDA_EDA_REV: ${{ needs.openlane-linux.outputs.CONDA_EDA_REV }}
     runs-on: "ubuntu-20.04"
     defaults:
       run:
@@ -97,7 +105,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openlane-*.tar.bz2
-          key: ${{ runner.os }}-openlane-${{ env.OPENLANE_REV }}         
+          key: ${{ runner.os }}-openlane-${{ env.OPENLANE_REV }}-${{ env.CONDA_EDA_REV }}      
 
       - name: construct installer
         run: |
@@ -120,6 +128,7 @@ jobs:
       - gf180mcuc-linux
     env:
       OPENLANE_REV: ${{ needs.openlane-linux.outputs.OPENLANE_REV }}
+      CONDA_EDA_REV: ${{ needs.openlane-linux.outputs.CONDA_EDA_REV }}
       GF180MCUC_REV: ${{ needs.gf180mcuc-linux.outputs.GF180MCUC_REV }}
     runs-on: "ubuntu-20.04"
     defaults:
@@ -137,7 +146,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/openlane-*.tar.bz2
-          key: ${{ runner.os }}-openlane-${{ env.OPENLANE_REV }}         
+          key: ${{ runner.os }}-openlane-${{ env.OPENLANE_REV }}-${{ env.CONDA_EDA_REV }}      
 
       - name: restore gf180mcuc cache
         uses: actions/cache@v3
