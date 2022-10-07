@@ -190,7 +190,7 @@ jobs:
       - run: |
           git config --local user.name conda-eda@bot
           git config --local user.email conda-eda@bot
-          TAG=$(git describe --tags)
+          TAG=$(git describe)
           git tag $TAG
           git push origin "HEAD:refs/tags/$TAG"
           echo "TAG=$TAG" >> $GITHUB_ENV
