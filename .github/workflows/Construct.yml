@@ -56,15 +56,27 @@ jobs:
       TCLLIB_REV: ${{ needs.tcllib-linux.outputs.TCLLIB_REV }}
       PACKAGE: "misc/openlane"
       OS_NAME: "linux"
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - name: checkout conda-eda
         uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
 
       - name: restore tcllib cache
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcllib-*.tar.bz2
           key: ${{ runner.os }}-tcllib-${{ env.TCLLIB_REV }}
+
+      - name: index local packages
+        run: |
+          conda install conda-build
+          conda index /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcllib-*.tar.bz2
 
       - name: env
         id: env
@@ -140,7 +152,7 @@ jobs:
       - name: restore tcllib cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcclib-*.tar.bz2
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcllib-*.tar.bz2
           key: ${{ runner.os }}-tcllib-${{ env.TCLLIB_REV }}
 
       - name: restore openlane cache
@@ -189,7 +201,7 @@ jobs:
       - name: restore tcllib cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcclib-*.tar.bz2
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcllib-*.tar.bz2
           key: ${{ runner.os }}-tcllib-${{ env.TCLLIB_REV }}
 
       - name: restore openlane cache
