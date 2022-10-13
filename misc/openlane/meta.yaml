@@ -29,6 +29,7 @@ requirements:
     - yosys
     - click
     - pyyaml
+    - tcllib
 
 test:
   requires:
