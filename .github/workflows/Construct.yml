@@ -63,7 +63,7 @@ jobs:
       - name: restore tcllib cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcclib-*.tar.bz2
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcllib-*.tar.bz2
           key: ${{ runner.os }}-tcllib-${{ env.TCLLIB_REV }}
 
       - name: env
@@ -85,12 +85,6 @@ jobs:
 
       - name: checkout conda-eda
         uses: actions/checkout@v3
-
-      - name: 'Install tcllib'
-        if: steps.cache-openlane.outputs.cache-hit != 'true'
-        run: |
-          sudo apt update
-          sudo apt install -y tcllib
 
       - uses: ./ci
         if: steps.cache-openlane.outputs.cache-hit != 'true'
