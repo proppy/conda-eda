@@ -14,7 +14,42 @@ defaults:
     shell: bash
 
 jobs:
+  tcclib-linux:
+    outputs:
+      TCLLIB_REV: ${{ steps.env.outputs.OPENLANE_REV }}
+    runs-on: "ubuntu-20.04"
+    env:
+      PACKAGE: "misc/tcllib"
+      OS_NAME: "linux"
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - name: env
+        id: env 
+        run: |
+          TCLLIB_REV=$(grep 'version =' misc/tcllib/meta.yaml | cut -d '"' -f 2)
+          echo "TCLLIB_REV=$TCLLIB_REV" >> $GITHUB_ENV
+          echo "::set-output name=TCLLIB_REV::$TCLLIB_REV"
+   
+      - name: restore tcllib cache
+        id: cache-tcllib
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcllib-*.tar.bz2
+          key: ${{ runner.os }}-tcllib-${{ env.TCLLIB_REV }}      
+
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: ./ci
+        if: steps.cache-tcllib.outputs.cache-hit != 'true'
+
   openlane-linux:
+    needs:
+      - tcllib-linux
+    env:
+      TCLLIB_REV: ${{ needs.tcllib-linux.outputs.TCLLIB_REV }}
     outputs:
       OPENLANE_REV: ${{ steps.env.outputs.OPENLANE_REV }}
       CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
@@ -25,6 +60,12 @@ jobs:
     steps:
       - name: checkout conda-eda
         uses: actions/checkout@v3
+
+      - name: restore tcllib cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcclib-*.tar.bz2
+          key: ${{ runner.os }}-tcllib-${{ env.TCLLIB_REV }}    
 
       - name: env
         id: env 
@@ -86,9 +127,11 @@ jobs:
   openlane-sky130a-installer:
     needs:
       - openlane-linux
+      - tcllib-linux
     env:
       OPENLANE_REV: ${{ needs.openlane-linux.outputs.OPENLANE_REV }}
       CONDA_EDA_REV: ${{ needs.openlane-linux.outputs.CONDA_EDA_REV }}
+      TCLLIB_REV: ${{ needs.tcllib-linux.outputs.TCLLIB_REV }}
     runs-on: "ubuntu-20.04"
     defaults:
       run:
@@ -100,6 +143,12 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: installer-env
+
+      - name: restore tcllib cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcclib-*.tar.bz2
+          key: ${{ runner.os }}-tcllib-${{ env.TCLLIB_REV }}    
 
       - name: restore openlane cache
         uses: actions/cache@v3
@@ -126,10 +175,12 @@ jobs:
     needs:
       - openlane-linux
       - gf180mcuc-linux
+      - tcllib-linux
     env:
       OPENLANE_REV: ${{ needs.openlane-linux.outputs.OPENLANE_REV }}
       CONDA_EDA_REV: ${{ needs.openlane-linux.outputs.CONDA_EDA_REV }}
       GF180MCUC_REV: ${{ needs.gf180mcuc-linux.outputs.GF180MCUC_REV }}
+      TCLLIB_REV: ${{ needs.tcllib-linux.outputs.TCLLIB_REV }}
     runs-on: "ubuntu-20.04"
     defaults:
       run:
@@ -141,6 +192,12 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: installer-env
+
+      - name: restore tcllib cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcclib-*.tar.bz2
+          key: ${{ runner.os }}-tcllib-${{ env.TCLLIB_REV }}    
 
       - name: restore openlane cache
         uses: actions/cache@v3
