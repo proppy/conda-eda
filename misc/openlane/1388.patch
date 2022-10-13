@@ -1,5 +1,5 @@
 diff --git a/dependencies/tool_metadata.yml b/dependencies/tool_metadata.yml
-index 0cc7cb8..87a0d5c 100644
+index d708143..140abca 100644
 --- a/dependencies/tool_metadata.yml
 +++ b/dependencies/tool_metadata.yml
 @@ -58,7 +58,7 @@
@@ -12,10 +12,10 @@ index 0cc7cb8..87a0d5c 100644
    in_install: false
  - name: git
 diff --git a/flow.tcl b/flow.tcl
-index a011303..e237b1e 100755
+index 8395418..2ec1686 100755
 --- a/flow.tcl
 +++ b/flow.tcl
-@@ -154,7 +154,7 @@ proc run_klayout_step {args} {
+@@ -156,7 +156,7 @@ proc run_klayout_step {args} {
  proc run_post_run_hooks {} {
      if { [file exists $::env(DESIGN_DIR)/hooks/post_run.py]} {
          puts_info "Running post run hook"
@@ -24,20 +24,8 @@ index a011303..e237b1e 100755
          puts_info "$result"
      } else {
          puts_info "hooks/post_run.py not found, skipping"
-diff --git a/run_issue_regressions.py b/run_issue_regressions.py
-index a19aceb..8d2e33e 100755
---- a/run_issue_regressions.py
-+++ b/run_issue_regressions.py
-@@ -135,6 +135,7 @@ def run_test_case(test_case):
-             subprocess.run(
-                 [
-                     "openroad",
-+                    "-exit",
-                     "-python",
-                     test_case_issue_regression_script,
-                     test_case + "/runs/issue_regression_run",
 diff --git a/scripts/tcl_commands/all.tcl b/scripts/tcl_commands/all.tcl
-index 160481d..6b1cc52 100755
+index 29efd3a..a02085b 100755
 --- a/scripts/tcl_commands/all.tcl
 +++ b/scripts/tcl_commands/all.tcl
 @@ -120,7 +120,7 @@ proc prep_lefs {args} {
@@ -62,7 +50,7 @@ index c258994..ea39271 100755
          insert_buffer \
          -o $::env(routing_tmpfiles)/eco_fix.tcl \
 diff --git a/scripts/tcl_commands/floorplan.tcl b/scripts/tcl_commands/floorplan.tcl
-index a66ede0..9446232 100755
+index 1f7f5f3..9dc26a5 100755
 --- a/scripts/tcl_commands/floorplan.tcl
 +++ b/scripts/tcl_commands/floorplan.tcl
 @@ -19,7 +19,7 @@ proc extract_core_dims {args} {
@@ -100,7 +88,7 @@ index 3c889d3..21b8655 100755
  			}
  
 diff --git a/scripts/tcl_commands/lvs.tcl b/scripts/tcl_commands/lvs.tcl
-index 2198440..61bad63 100755
+index c6fc4ff..40c4cb2 100755
 --- a/scripts/tcl_commands/lvs.tcl
 +++ b/scripts/tcl_commands/lvs.tcl
 @@ -93,7 +93,7 @@ proc write_powered_verilog {args} {
@@ -113,7 +101,7 @@ index 2198440..61bad63 100755
          --input-lef $arg_values(-lef) \
          --power-port $arg_values(-power) \
 diff --git a/scripts/tcl_commands/routing.tcl b/scripts/tcl_commands/routing.tcl
-index 5383e60..fdc884a 100755
+index c93aa51..2cbb37a 100755
 --- a/scripts/tcl_commands/routing.tcl
 +++ b/scripts/tcl_commands/routing.tcl
 @@ -140,7 +140,7 @@ proc detailed_routing_tritonroute {args} {
@@ -126,7 +114,7 @@ index 5383e60..fdc884a 100755
          --design-name $::env(DESIGN_NAME) \
          $::env(routing_reports)/drt.drc
 diff --git a/scripts/utils/utils.tcl b/scripts/utils/utils.tcl
-index fe8ed84..3db9e1b 100755
+index dc71b93..5f9e19e 100755
 --- a/scripts/utils/utils.tcl
 +++ b/scripts/utils/utils.tcl
 @@ -424,7 +424,7 @@ proc manipulate_layout {args} {
@@ -139,7 +127,7 @@ index fe8ed84..3db9e1b 100755
          --input-lef $::env(MERGED_LEF) \
          --output-def $arg_values(-output_def) \
 diff --git a/tests/1007/interactive.tcl b/tests/1007/interactive.tcl
-index 8e1a29c..c0bb6e9 100644
+index 5f37101..2e7edf0 100644
 --- a/tests/1007/interactive.tcl
 +++ b/tests/1007/interactive.tcl
 @@ -12,6 +12,6 @@ insert_buffer\
@@ -165,3 +153,15 @@ index 9486dad..782464b 100644
  
  import odb
  
+diff --git a/tests/__main__.py b/tests/__main__.py
+index dd84770..5efa010 100755
+--- a/tests/__main__.py
++++ b/tests/__main__.py
+@@ -156,6 +156,7 @@ def run_test_case(test_case):
+                 subprocess.run(
+                     [
+                         "openroad",
++                        "-exit",
+                         "-python",
+                         test_case_issue_regression_script,
+                         os.path.join(test_case, "runs", "issue_regression_run"),
