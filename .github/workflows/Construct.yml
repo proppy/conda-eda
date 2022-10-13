@@ -16,7 +16,7 @@ defaults:
 jobs:
   tcllib-linux:
     outputs:
-      TCLLIB_REV: ${{ steps.env.outputs.OPENLANE_REV }}
+      TCLLIB_REV: ${{ steps.env.outputs.TCLLIB_REV }}
     runs-on: "ubuntu-20.04"
     env:
       PACKAGE: "misc/tcllib"
