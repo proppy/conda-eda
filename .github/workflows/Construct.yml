@@ -76,7 +76,7 @@ jobs:
       - name: index local packages
         run: |
           conda install conda-build
-          conda index /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/
+          conda index /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/
 
       - name: env
         id: env
