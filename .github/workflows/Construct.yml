@@ -73,11 +73,12 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcllib-*.tar.bz2
           key: ${{ runner.os }}-tcllib-${{ env.TCLLIB_REV }}
 
-      - name: index local packages
+      - name: index local channel
         run: |
           conda install conda-build
-          conda index /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/
-
+          mkdir -p /tmp/conda-bld/{linux-64,noarch}
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/tcllib-*.tar.bz2 /tmp/conda-bld/linux-64/
+          conda index /tmp/conda-bld
       - name: env
         id: env
         run: |
