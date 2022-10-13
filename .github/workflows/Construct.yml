@@ -48,13 +48,12 @@ jobs:
   openlane-linux:
     needs:
       - tcllib-linux
-    env:
-      TCLLIB_REV: ${{ needs.tcllib-linux.outputs.TCLLIB_REV }}
     outputs:
       OPENLANE_REV: ${{ steps.env.outputs.OPENLANE_REV }}
       CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
     runs-on: "ubuntu-20.04"
     env:
+      TCLLIB_REV: ${{ needs.tcllib-linux.outputs.TCLLIB_REV }}
       PACKAGE: "misc/openlane"
       OS_NAME: "linux"
     steps:
