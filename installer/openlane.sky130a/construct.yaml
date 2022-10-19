@@ -12,6 +12,7 @@ specs:
   - open_pdks.sky130a
   - xls
   - tcllib
+  - symbiyosys
 
 channels_remap:
   - src: file:///tmp/conda-bld

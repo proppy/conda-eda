@@ -12,6 +12,7 @@ specs:
   - open_pdks.gf180mcuc
   - xls
   - tcllib
+  - symbiyosys
 
 channels_remap:
   - src: file:///tmp/conda-bld
