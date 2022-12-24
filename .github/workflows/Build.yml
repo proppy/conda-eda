@@ -688,28 +688,17 @@ jobs:
       - uses: ./ci
 
   #61
-  open_pdks-linux-sky130a:
+  open_pdks-sky130a-linux:
     runs-on: "ubuntu-20.04"
     needs: ["magic-linux"]
     env:
-      PACKAGE: "misc/open_pdks/sky130a"
+      PACKAGE: "misc/open_pdks"
       OS_NAME: "linux"
     steps:
       - uses: actions/checkout@v3
       - uses: ./ci
 
   #62
-  open_pdks-linux-gf180mcuc:
-    runs-on: "ubuntu-20.04"
-    needs: ["magic-linux"]
-    env:
-      PACKAGE: "misc/open_pdks/gf180mcuc"
-      OS_NAME: "linux"
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./ci
-
-  #63
   openroad-linux:
     runs-on: "ubuntu-20.04"
     env:
@@ -719,7 +708,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./ci
 
-  #64
+  #63
   xls-linux:
     # uses older ubuntu for better compat:
     # https://github.com/hdl/conda-eda/issues/199
@@ -731,7 +720,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./ci
 
-  #65
+  #64
   openlane-linux:
     needs: ["magic-linux", "netgen-linux", "openroad-linux", "yosys-linux-py37", "yosys-linux-py38"]
     runs-on: "ubuntu-20.04"
@@ -742,7 +731,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./ci
 
-  #66
+  #65
   xschem-linux:
     runs-on: "ubuntu-20.04"
     env:
@@ -752,7 +741,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./ci
 
-  #67
+  #66
   klayout-linux-py37:
     runs-on: "ubuntu-20.04"
     env:
@@ -763,7 +752,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./ci
 
-  #66
+  #67
   ngpspice-linux:
     runs-on: "ubuntu-20.04"
     env:

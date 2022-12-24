@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 cat >> $PREFIX/share/openlane/install/env.tcl <<EOF
 set ::env(PDK) "sky130A"

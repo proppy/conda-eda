@@ -14,4 +14,8 @@ specs:
   - tcllib
   - symbiyosys
 
+channels_remap:
+  - src: file:///tmp/conda-bld
+    dest: https://conda.anaconda.org/litex-hub
+
 post_install: post_install.sh

@@ -56,7 +56,54 @@ jobs:
       - uses: ./ci
         if: steps.cache-ngspice.outputs.cache-hit != 'true'
 
+  open_pdks-linux:
+    outputs:
+      OPEN_PDKS_REV: ${{ steps.env.outputs.OPEN_PDKS_REV }}
+      CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
+    runs-on: "ubuntu-20.04"
+    env:
+      PACKAGE: "misc/open_pdks"
+      OS_NAME: "linux"
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+
+      - name: env
+        id: env
+        run: |
+          OPEN_PDKS_REV=$(git ls-remote https://github.com/RTimothyEdwards/open_pdks.git HEAD | cut -f 1)
+          echo "OPEN_PDKS_REV=$OPEN_PDKS_REV" >> $GITHUB_ENV
+          echo "::set-output name=OPEN_PDKS_REV::$OPEN_PDKS_REV"
+          CONDA_EDA_REV=$(git rev-parse HEAD)
+          echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
+          echo "::set-output name=CONDA_EDA_REV::$CONDA_EDA_REV"
+
+      - name: restore open_pdks cache
+        id: cache-open_pdks
+        uses: actions/cache@v3
+        with:
+          path: /home/runner1/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks*.tar.bz2
+          key: ${{ runner.os }}-open_pdks-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: ./ci
+        if: steps.cache-open_pdks.outputs.cache-hit != 'true'
+
   openlane-sky130a-installer:
+    needs:
+      - open_pdks-linux
+    env:
+      OPEN_PDKS_REV: ${{ needs.open_pdks-linux.outputs.OPEN_PDKS_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-linux.outputs.CONDA_EDA_REV }}
     runs-on: "ubuntu-20.04"
     defaults:
       run:
@@ -69,9 +116,19 @@ jobs:
         with:
           activate-environment: installer-env
 
+      - name: restore open_pdks cache
+        id: cache-open_pdks
+        uses: actions/cache@v3
+        with:
+          path: /home/runner1/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks*.tar.bz2
+          key: ${{ runner.os }}-open_pdks-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+
       - name: construct installer
         run: |
           conda install constructor conda-build
+          mkdir -p /tmp/conda-bld/{linux-64,noarch}
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/open_pdks*.tar.bz2 /tmp/conda-bld/linux-64/
+          conda index /tmp/conda-bld
           constructor installer/openlane.sky130a/
 
       - name: archive installer
@@ -83,8 +140,10 @@ jobs:
         
   analog-sky130a-installer:
     needs:
+      - open_pdks-linux
       - ngspice-linux
     env:
+      OPEN_PDKS_REV: ${{ needs.open_pdks-linux.outputs.OPEN_PDKS_REV }}
       NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
       CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
     runs-on: "ubuntu-20.04"
@@ -99,6 +158,13 @@ jobs:
         with:
           activate-environment: installer-env
 
+      - name: restore open_pdks cache
+        id: cache-open_pdks
+        uses: actions/cache@v3
+        with:
+          path: /home/runner1/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks*.tar.bz2
+          key: ${{ runner.os }}-open_pdks-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+
       - name: restore ngspice cache
         uses: actions/cache@v3
         with:
@@ -110,6 +176,7 @@ jobs:
           conda install constructor conda-build
           mkdir -p /tmp/conda-bld/{linux-64,noarch}
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/open_pdks*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/analog.sky130a/
 
