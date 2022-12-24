@@ -1,0 +1,19 @@
+name: analog.gf180mcuc
+version: 0
+
+channels:
+  - https://conda.anaconda.org/litex-hub
+  - https://repo.anaconda.com/pkgs/main/
+  - file:///tmp/conda-bld
+
+specs:
+  - python 3.7*
+  - conda
+  - open_pdks.gf180mcuc
+  - xschem
+  - magic
+  - klayout
+  - ngspice
+  - pandas
+
+post_install: post_install.sh

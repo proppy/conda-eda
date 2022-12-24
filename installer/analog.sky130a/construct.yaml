@@ -1,0 +1,22 @@
+name: analog.sky130a
+version: 0
+
+channels:
+  - https://conda.anaconda.org/litex-hub
+  - https://repo.anaconda.com/pkgs/main/
+
+specs:
+  - python 3.7*
+  - conda
+  - open_pdks.sky130a
+  - xschem
+  - magic
+  - klayout
+  - ngspice
+  - pandas
+
+channels_remap:
+  - src: file:///tmp/conda-bld
+    dest: https://conda.anaconda.org/litex-hub
+
+post_install: post_install.sh
