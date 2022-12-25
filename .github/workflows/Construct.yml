@@ -89,7 +89,7 @@ jobs:
         id: cache-open_pdks
         uses: actions/cache@v3
         with:
-          path: /home/runner1/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks*.tar.bz2
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
           key: ${{ runner.os }}-open_pdks-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
 
       - name: checkout conda-eda
@@ -120,14 +120,14 @@ jobs:
         id: cache-open_pdks
         uses: actions/cache@v3
         with:
-          path: /home/runner1/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks*.tar.bz2
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
           key: ${{ runner.os }}-open_pdks-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
 
       - name: construct installer
         run: |
           conda install constructor conda-build
           mkdir -p /tmp/conda-bld/{linux-64,noarch}
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/open_pdks*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/openlane.sky130a/
 
@@ -162,7 +162,7 @@ jobs:
         id: cache-open_pdks
         uses: actions/cache@v3
         with:
-          path: /home/runner1/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks*.tar.bz2
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
           key: ${{ runner.os }}-open_pdks-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
 
       - name: restore ngspice cache
@@ -176,7 +176,7 @@ jobs:
           conda install constructor conda-build
           mkdir -p /tmp/conda-bld/{linux-64,noarch}
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/open_pdks*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/analog.sky130a/
 
