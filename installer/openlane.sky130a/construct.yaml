@@ -11,7 +11,6 @@ specs:
   - openlane
   - open_pdks.sky130a
   - xls
-  - tcllib
   - symbiyosys
 
 channels_remap:
