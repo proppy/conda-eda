@@ -2,6 +2,7 @@ name: analog-sky130a
 version: 0
 
 channels:
+  - file:///tmp/conda-bld
   - https://conda.anaconda.org/litex-hub
   - http://repo.anaconda.com/pkgs/main/
 
