@@ -33,13 +33,13 @@ requirements:
     - {{ cdt('libxext-devel') }}  # [linux]
     - {{ cdt('libxrender-devel') }}  # [linux]
   host:
+    - readline
+    - ncurses
     - libgomp
-    - readline
-    - ncurses
   run:
-    - libgomp    
     - readline
     - ncurses
+    - _openmp_mutex
 
 test:
   commands:
