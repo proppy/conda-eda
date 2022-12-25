@@ -71,8 +71,8 @@ jobs:
       - name: maximize build space
         uses: easimon/maximize-build-space@master
         with:
-          root-reserve-mb: 8096
-          swap-size-mb: 8096
+          root-reserve-mb: 2048
+          swap-size-mb: 2048
           remove-dotnet: 'true'
 
       - name: checkout conda-eda
