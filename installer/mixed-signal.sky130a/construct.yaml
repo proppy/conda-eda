@@ -17,6 +17,7 @@ specs:
   - pandas
   - openlane
   - xls
+  - iverilog
   - symbiyosys
 
 channels_remap:

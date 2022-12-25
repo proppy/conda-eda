@@ -2,8 +2,7 @@
 
 set -e
 
-set -e
-
+# set sky130a analog defaults
 export TMPDIR=$(mktemp -d)
 patch -p1 -d $PREFIX <<EOF
 diff -Nru analog-env-1/share/pdk/sky130A/libs.tech/klayout/lvs/sky130.lylvs analog-env-2/share/pdk/sky130A/libs.tech/klayout/lvs/sky130.lylvs
@@ -85,8 +84,12 @@ xschem.real --rcfile \$CONDA_PREFIX/share/pdk/sky130A/libs.tech/xschem/xschemrc 
 EOF
 chmod +x $PREFIX/bin/xschem
 
+# set sky130a digital defaults
 cat >> $PREFIX/share/openlane/install/env.tcl <<EOF
 set ::env(PDK) "sky130A"
 set ::env(STD_CELL_LIBRARY) "sky130_fd_sc_hd"
 set ::env(STD_CELL_LIBRARY_OPT) "sky130_fd_sc_hd"
 EOF
+
+# fix up yosys dep
+(cd $PREFIX/lib && ln -s libffi.so.7 libffi.so.6)
