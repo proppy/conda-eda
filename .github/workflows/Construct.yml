@@ -187,10 +187,60 @@ jobs:
           path: |
             /home/runner/work/conda-eda/conda-eda/analog-sky130a-0-Linux-x86_64.sh
 
+  mixed_signal-sky130a-installer:
+    needs:
+      - open_pdks-linux
+      - ngspice-linux
+    env:
+      OPEN_PDKS_REV: ${{ needs.open_pdks-linux.outputs.OPEN_PDKS_REV }}
+      NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
+      CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
+    runs-on: "ubuntu-20.04"
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+
+      - name: restore open_pdks cache
+        id: cache-open_pdks
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
+          key: ${{ runner.os }}-open_pdks-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+
+      - name: restore ngspice cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2
+          key: ${{ runner.os }}-ngspice-${{ env.NGSPICE_REV }}-${{ env.CONDA_EDA_REV }}
+
+      - name: construct installer
+        run: |
+          conda install constructor conda-build
+          mkdir -p /tmp/conda-bld/{linux-64,noarch}
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/
+          conda index /tmp/conda-bld
+          constructor installer/mixed_signal.sky130a/
+
+      - name: archive installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: "mixed_signal-sky130a-installer"
+          path: |
+            /home/runner/work/conda-eda/conda-eda/mixed_signal-sky130a-0-Linux-x86_64.sh
+
   release:
     needs:
       - openlane-sky130a-installer
       - analog-sky130a-installer
+      - mixed_signal-sky130a-installer      
     runs-on: "ubuntu-20.04"
     steps:
       - name: checkout conda-eda
@@ -215,3 +265,4 @@ jobs:
           files: |
             openlane-*-installer/*.sh            
             analog-*-installer/*.sh
+            mixed_signal-*-installer/*.sh
