@@ -98,7 +98,7 @@ jobs:
       - uses: ./ci
         if: steps.cache-open_pdks.outputs.cache-hit != 'true'
 
-  openlane-sky130a-installer:
+  digital-sky130a-installer:
     needs:
       - open_pdks-linux
     env:
@@ -129,14 +129,14 @@ jobs:
           mkdir -p /tmp/conda-bld/{linux-64,noarch}
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
-          constructor installer/openlane.sky130a/
+          constructor installer/digital.sky130a/
 
       - name: archive installer
         uses: actions/upload-artifact@v3
         with:
-          name: "openlane-sky130a-installer"
+          name: "digital.sky130a-installer"
           path: |
-            /home/runner/work/conda-eda/conda-eda/openlane-sky130a-0-Linux-x86_64.sh
+            /home/runner/work/conda-eda/conda-eda/digital.sky130a-0-Linux-x86_64.sh
         
   analog-sky130a-installer:
     needs:
@@ -183,11 +183,11 @@ jobs:
       - name: archive installer
         uses: actions/upload-artifact@v3
         with:
-          name: "analog-sky130a-installer"
+          name: "analog.sky130a-installer"
           path: |
-            /home/runner/work/conda-eda/conda-eda/analog-sky130a-0-Linux-x86_64.sh
+            /home/runner/work/conda-eda/conda-eda/analog.sky130a-0-Linux-x86_64.sh
 
-  mixed_signal-sky130a-installer:
+  mixed-signal-sky130a-installer:
     needs:
       - open_pdks-linux
       - ngspice-linux
@@ -227,20 +227,20 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
-          constructor installer/mixed_signal.sky130a/
+          constructor installer/mixed-signal.sky130a/
 
       - name: archive installer
         uses: actions/upload-artifact@v3
         with:
-          name: "mixed_signal-sky130a-installer"
+          name: "mixed-signal.sky130a-installer"
           path: |
-            /home/runner/work/conda-eda/conda-eda/mixed_signal-sky130a-0-Linux-x86_64.sh
+            /home/runner/work/conda-eda/conda-eda/mixed-signal.sky130a-0-Linux-x86_64.sh
 
   release:
     needs:
-      - openlane-sky130a-installer
+      - digital-sky130a-installer
       - analog-sky130a-installer
-      - mixed_signal-sky130a-installer      
+      - mixed-signal-sky130a-installer      
     runs-on: "ubuntu-20.04"
     steps:
       - name: checkout conda-eda
@@ -263,6 +263,6 @@ jobs:
           name: ${{ env.TAG }}
           tag_name: ${{ env.TAG }}
           files: |
-            openlane-*-installer/*.sh            
-            analog-*-installer/*.sh
-            mixed_signal-*-installer/*.sh
+            digital.*-installer/*.sh            
+            analog.*-installer/*.sh
+            mixed-signal.*-installer/*.sh
