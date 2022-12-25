@@ -73,12 +73,12 @@ EOF
 
 mv $PREFIX/bin/magic $PREFIX/bin/magic.real
 cat > $PREFIX/bin/magic <<EOF
-magic.real -rcfile \$CONDA_PREFIX/share/pdk/sky130A/libs.tech/magic/sky130A.magicrc 
+magic.real -rcfile \$CONDA_PREFIX/share/pdk/sky130A/libs.tech/magic/sky130A.magicrc $\@
 EOF
 chmod +x $PREFIX/bin/magic
 
 mv $PREFIX/bin/xschem $PREFIX/bin/xschem.real
 cat > $PREFIX/bin/xschem <<EOF
-xschem.real --rcfile \$CONDA_PREFIX/share/pdk/sky130A/libs.tech/xschem/xschemrc
+xschem.real --rcfile \$CONDA_PREFIX/share/pdk/sky130A/libs.tech/xschem/xschemrc $\@
 EOF
 chmod +x $PREFIX/bin/xschem
