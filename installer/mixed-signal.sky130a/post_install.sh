@@ -2,7 +2,7 @@
 
 set -e
 
-# set sky130a analog defaults
+# set sky130a defaults
 export TMPDIR=$(mktemp -d)
 patch -p1 -d $PREFIX <<EOF
 diff -Nru analog-env-1/share/pdk/sky130A/libs.tech/klayout/lvs/sky130.lylvs analog-env-2/share/pdk/sky130A/libs.tech/klayout/lvs/sky130.lylvs
@@ -61,35 +61,29 @@ EOF
 
 cat > $PREFIX/etc/conda/activate.d/open_pdks_activate.sh <<EOF
 export PDK_ROOT=\$CONDA_PREFIX/share/pdk
+export PDK=sky130A
 EOF
 
 cat > $PREFIX/etc/conda/activate.d/klayout_activate.sh <<EOF
-export KLAYOUT_HOME=\$CONDA_PREFIX/share/pdk/sky130A/libs.tech/klayout
+export KLAYOUT_HOME=\$CONDA_PREFIX/share/pdk/\$PDK/libs.tech/klayout
 EOF
 
 (cd $PREFIX/share/pdk/sky130A/libs.tech/ngspice && ln spinit .spiceinit)
 cat > $PREFIX/etc/conda/activate.d/ngspice_activate.sh <<EOF
-export SPICE_USERINIT_DIR=\$CONDA_PREFIX/share/pdk/sky130A/libs.tech/ngspice
+export SPICE_USERINIT_DIR=\$CONDA_PREFIX/share/pdk/\$PDK/libs.tech/ngspice
 EOF
 
 mv $PREFIX/bin/magic $PREFIX/bin/magic.real
 cat > $PREFIX/bin/magic <<EOF
-magic.real -rcfile \$CONDA_PREFIX/share/pdk/sky130A/libs.tech/magic/sky130A.magicrc \$@
+magic.real -rcfile \$CONDA_PREFIX/share/pdk/\$PDK/libs.tech/magic/\$PDK.magicrc \$@
 EOF
 chmod +x $PREFIX/bin/magic
 
 mv $PREFIX/bin/xschem $PREFIX/bin/xschem.real
 cat > $PREFIX/bin/xschem <<EOF
-xschem.real --rcfile \$CONDA_PREFIX/share/pdk/sky130A/libs.tech/xschem/xschemrc \$@
+xschem.real --rcfile \$CONDA_PREFIX/share/pdk/\$PDK/libs.tech/xschem/xschemrc \$@
 EOF
 chmod +x $PREFIX/bin/xschem
-
-# set sky130a digital defaults
-cat >> $PREFIX/share/openlane/install/env.tcl <<EOF
-set ::env(PDK) "sky130A"
-set ::env(STD_CELL_LIBRARY) "sky130_fd_sc_hd"
-set ::env(STD_CELL_LIBRARY_OPT) "sky130_fd_sc_hd"
-EOF
 
 # fix up yosys dep
 (cd $PREFIX/lib && ln -s libffi.so.7 libffi.so.6)
