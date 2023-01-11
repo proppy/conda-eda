@@ -1,0 +1,46 @@
+# Use `conda-build-prepare` before building for a better version string.
+{% set version = '%s_%04i_%s'| format(GIT_DESCRIBE_TAG | default('0.X'), GIT_DESCRIBE_NUMBER | default(0) | int, GIT_DESCRIBE_HASH | default('gUNKNOWN')) %}
+
+{% set pdk_version = '8f01d8f4d17110a53080cafc52c7762b94101f1d' %}
+{% set pdk_md5 = '9e3e81d9fb6d272312360568bf9c168d' %}
+package:
+  name: open_pdks.gf180mcuc
+  version: {{ version }}
+
+source:
+  - git_url: https://github.com/RTimothyEdwards/open_pdks.git
+    git_rev: {{ pdk_version }}
+    
+  - url: https://github.com/efabless/volare/releases/download/gf180mcu-{{ pdk_version }}/default.tar.xz
+    md5: {{ pdk_md5 }}
+    folder: pdk_root
+
+build:
+  noarch: generic
+  # number: 202202031935
+  number: {{ environ.get('DATE_NUM') }}
+  # string: 20220203_1935
+  string: {{ environ.get('DATE_STR') }}
+  script_env:
+    - CI
+
+test:
+  commands:
+    - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_io
+    - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_sc_mcu7t5v0
+    - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_sc_mcu9t5v0
+    - test -d $PREFIX/share/pdk/gf180mcuC/libs.ref/gf180mcu_fd_ip_sram
+    # from gf180mcu_fd_pr
+    - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/ngspice
+    - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/xyce
+    - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout
+    - test -d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem
+  
+about:
+  home: http://opencircuitdesign.com/open_pdks/
+  license: Apache-2.0
+  summary: 'PDK installer for open-source EDA tools and toolchains. Distributed with a setup for the Google/SkyWater 130nm process.'
+
+extra:
+  recipe-maintainers:
+    - proppy
