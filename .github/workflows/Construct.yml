@@ -137,7 +137,7 @@ jobs:
         id: cache-open_pdks
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
           key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
 
       - name: checkout conda-eda
@@ -308,7 +308,7 @@ jobs:
         id: cache-open_pdks
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
           key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
 
       - name: restore ngspice cache
@@ -322,7 +322,7 @@ jobs:
           conda install constructor conda-build
           mkdir -p /tmp/conda-bld/{linux-64,noarch}
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.gf180mcuc/
 

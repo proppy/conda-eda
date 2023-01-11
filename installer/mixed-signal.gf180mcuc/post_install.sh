@@ -11,7 +11,7 @@ cat > $PREFIX/etc/conda/activate.d/klayout_activate.sh <<EOF
 export KLAYOUT_HOME=\$CONDA_PREFIX/share/pdk/\$PDK/libs.tech/klayout
 EOF
 
-(cd $PREFIX/share/pdk/sky130A/libs.tech/ngspice && ln spinit .spiceinit)
+(cd $PREFIX/share/pdk/gf180mcuc/libs.tech/ngspice && ln spinit .spiceinit)
 cat > $PREFIX/etc/conda/activate.d/ngspice_activate.sh <<EOF
 export SPICE_USERINIT_DIR=\$CONDA_PREFIX/share/pdk/\$PDK/libs.tech/ngspice
 EOF
