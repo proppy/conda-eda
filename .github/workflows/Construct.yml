@@ -110,6 +110,12 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          overprovision-lvm: 'true'
+          remove-dotnet: 'true'
+
       - name: checkout conda-eda
         uses: actions/checkout@v3
 
