@@ -1,19 +1,13 @@
 # Use `conda-build-prepare` before building for a better version string.
 {% set version = '%s_%04i_%s'| format(GIT_DESCRIBE_TAG | default('0.X'), GIT_DESCRIBE_NUMBER | default(0) | int, GIT_DESCRIBE_HASH | default('gUNKNOWN')) %}
 
-{% set pdk_version = '8f01d8f4d17110a53080cafc52c7762b94101f1d' %}
-{% set pdk_md5 = '3438313b40836153dc2c7d903a1350d4' %}
 package:
   name: open_pdks.sky130a
   version: {{ version }}
 
 source:
   - git_url: https://github.com/RTimothyEdwards/open_pdks.git
-    git_rev: {{ pdk_version }}
-    
-  - url: https://github.com/efabless/volare/releases/download/sky130-{{ pdk_version }}/default.tar.xz
-    md5: {{ pdk_md5 }}
-    folder: pdk_root
+    git_rev: {{ environ.get('OPEN_PDKS_REV') }}
 
 build:
   noarch: generic
@@ -23,6 +17,7 @@ build:
   string: {{ environ.get('DATE_STR') }}
   script_env:
     - CI
+    - OPEN_PDKS_REV
 
 test:
   commands:

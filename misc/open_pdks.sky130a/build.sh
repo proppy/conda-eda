@@ -17,4 +17,4 @@
 set -ex
 
 mkdir -p $PREFIX/share/pdk
-cp -ar pdk_root/sky130A $PREFIX/share/pdk/
+curl --silent -L https://github.com/efabless/volare/releases/download/sky130-$OPEN_PDKS_REV/default.tar.xz | tar -xvJf - -C $PREFIX/share/pdk sky130A/

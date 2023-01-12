@@ -18,10 +18,10 @@ jobs:
     outputs:
       NGSPICE_REV: ${{ steps.env.outputs.NGSPICE_REV }}
       CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
-    runs-on: "ubuntu-20.04"
+    runs-on: 'ubuntu-20.04'
     env:
-      PACKAGE: "sim/ngspice"
-      OS_NAME: "linux"
+      PACKAGE: 'sim/ngspice'
+      OS_NAME: 'linux'
     defaults:
       run:
         shell: bash -l {0}
@@ -60,10 +60,11 @@ jobs:
     outputs:
       OPEN_PDKS_REV: ${{ steps.env.outputs.OPEN_PDKS_REV }}
       CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
-    runs-on: "ubuntu-20.04"
+    runs-on: 'ubuntu-20.04'
     env:
-      PACKAGE: "misc/open_pdks.sky130a"
-      OS_NAME: "linux"
+      PACKAGE: 'misc/open_pdks.sky130a'
+      OS_NAME: 'linux'
+      OPEN_PDKS_REV: '9f1c2b06d2b5a6708cfe0b55679c7e84d37220cc'
     defaults:
       run:
         shell: bash -l {0}
@@ -78,8 +79,6 @@ jobs:
       - name: env
         id: env
         run: |
-          OPEN_PDKS_REV=$(git ls-remote https://github.com/RTimothyEdwards/open_pdks.git HEAD | cut -f 1)
-          echo "OPEN_PDKS_REV=$OPEN_PDKS_REV" >> $GITHUB_ENV
           echo "::set-output name=OPEN_PDKS_REV::$OPEN_PDKS_REV"
           CONDA_EDA_REV=$(git rev-parse HEAD)
           echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
@@ -103,11 +102,12 @@ jobs:
     outputs:
       OPEN_PDKS_REV: ${{ steps.env.outputs.OPEN_PDKS_REV }}
       CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
-    runs-on: "ubuntu-20.04"
+    runs-on: 'ubuntu-20.04'
     env:
-      PACKAGE: "misc/open_pdks.gf180mcuc"
-      OS_NAME: "linux"
-      TMPDIR: "/home/runner/work/tmpdir"
+      PACKAGE: 'misc/open_pdks.gf180mcuc'
+      OS_NAME: 'linux'
+      TMPDIR: '/home/runner/work/tmpdir'
+      OPEN_PDKS_REV: 'b8c6129fb60851c452a3136c2b8c603bb92cb180'      
     defaults:
       run:
         shell: bash -l {0}
@@ -130,8 +130,6 @@ jobs:
       - name: env
         id: env
         run: |
-          OPEN_PDKS_REV=$(git ls-remote https://github.com/RTimothyEdwards/open_pdks.git HEAD | cut -f 1)
-          echo "OPEN_PDKS_REV=$OPEN_PDKS_REV" >> $GITHUB_ENV
           echo "::set-output name=OPEN_PDKS_REV::$OPEN_PDKS_REV"
           CONDA_EDA_REV=$(git rev-parse HEAD)
           echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
@@ -157,7 +155,7 @@ jobs:
     env:
       OPEN_PDKS_REV: ${{ needs.open_pdks-linux-sky130a.outputs.OPEN_PDKS_REV }}
       CONDA_EDA_REV: ${{ needs.open_pdks-linux-sky130a.outputs.CONDA_EDA_REV }}
-    runs-on: "ubuntu-20.04"
+    runs-on: 'ubuntu-20.04'
     defaults:
       run:
         shell: bash -l {0}
@@ -187,7 +185,7 @@ jobs:
       - name: archive installer
         uses: actions/upload-artifact@v3
         with:
-          name: "digital.sky130a-installer"
+          name: 'digital.sky130a-installer'
           path: |
             /home/runner/work/conda-eda/conda-eda/digital.sky130a-0-Linux-x86_64.sh
         
@@ -199,7 +197,7 @@ jobs:
       OPEN_PDKS_REV: ${{ needs.open_pdks-linux-sky130a.outputs.OPEN_PDKS_REV }}
       NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
       CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
-    runs-on: "ubuntu-20.04"
+    runs-on: 'ubuntu-20.04'
     defaults:
       run:
         shell: bash -l {0}
@@ -236,7 +234,7 @@ jobs:
       - name: archive installer
         uses: actions/upload-artifact@v3
         with:
-          name: "analog.sky130a-installer"
+          name: 'analog.sky130a-installer'
           path: |
             /home/runner/work/conda-eda/conda-eda/analog.sky130a-0-Linux-x86_64.sh
 
@@ -248,7 +246,7 @@ jobs:
       OPEN_PDKS_REV: ${{ needs.open_pdks-linux-sky130a.outputs.OPEN_PDKS_REV }}
       NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
       CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
-    runs-on: "ubuntu-20.04"
+    runs-on: 'ubuntu-20.04'
     defaults:
       run:
         shell: bash -l {0}
@@ -285,7 +283,7 @@ jobs:
       - name: archive installer
         uses: actions/upload-artifact@v3
         with:
-          name: "mixed-signal.sky130a-installer"
+          name: 'mixed-signal.sky130a-installer'
           path: |
             /home/runner/work/conda-eda/conda-eda/mixed-signal.sky130a-0-Linux-x86_64.sh
 
@@ -298,7 +296,7 @@ jobs:
       OPEN_PDKS_REV: ${{ needs.open_pdks-linux-gf180mcuc.outputs.OPEN_PDKS_REV }}
       NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
       CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
-    runs-on: "ubuntu-20.04"
+    runs-on: 'ubuntu-20.04'
     defaults:
       run:
         shell: bash -l {0}
@@ -335,7 +333,7 @@ jobs:
       - name: archive installer
         uses: actions/upload-artifact@v3
         with:
-          name: "mixed-signal.gf180mcuc-installer"
+          name: 'mixed-signal.gf180mcuc-installer'
           path: |
             /home/runner/work/conda-eda/conda-eda/mixed-signal.gf180mcuc-0-Linux-x86_64.sh
 
@@ -345,7 +343,7 @@ jobs:
       - analog-sky130a-installer
       - mixed-signal-sky130a-installer
       - mixed-signal-gf180mcuc-installer      
-    runs-on: "ubuntu-20.04"
+    runs-on: 'ubuntu-20.04'
     steps:
       - name: checkout conda-eda
         uses: actions/checkout@v3
