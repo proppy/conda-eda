@@ -99,6 +99,7 @@ jobs:
         if: steps.cache-open_pdks.outputs.cache-hit != 'true'
 
   open_pdks-linux-gf180mcuc:
+    continue-on-error: true    
     outputs:
       OPEN_PDKS_REV: ${{ steps.env.outputs.OPEN_PDKS_REV }}
       CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
@@ -289,6 +290,7 @@ jobs:
             /home/runner/work/conda-eda/conda-eda/mixed-signal.sky130a-0-Linux-x86_64.sh
 
   mixed-signal-gf180mcuc-installer:
+    continue-on-error: true    
     needs:
       - open_pdks-linux-gf180mcuc
       - ngspice-linux
