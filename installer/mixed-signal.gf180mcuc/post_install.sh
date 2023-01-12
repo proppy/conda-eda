@@ -24,8 +24,8 @@ xschem.real --rcfile \$CONDA_PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/xschemr
 EOF
 chmod +x $PREFIX/bin/xschem
 cat >> $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/xschemrc <<EOF
-set XSCHEM_START_WINDOW ${PDK_ROOT}/gf180mcuC/libs.tech/xschem/tests/0_top.sch
-append XSCHEM_LIBRARY_PATH :${PDK_ROOT}/gf180mcuC/libs.tech/xschem
+set XSCHEM_START_WINDOW \${PDK_ROOT}/gf180mcuC/libs.tech/xschem/tests/0_top.sch
+append XSCHEM_LIBRARY_PATH :\${PDK_ROOT}/gf180mcuC/libs.tech/xschem
 EOF
 
 # fix up yosys dep
