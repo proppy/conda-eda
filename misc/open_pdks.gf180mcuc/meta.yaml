@@ -19,7 +19,7 @@ build:
   script_env:
     - CI
     - TMPDIR
-    - PDK_VERSION={{ pdk_versiok }}
+    - PDK_VERSION={{ pdk_version }}
 
 test:
   commands:
