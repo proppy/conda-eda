@@ -106,6 +106,7 @@ jobs:
     env:
       PACKAGE: "misc/open_pdks.gf180mcuc"
       OS_NAME: "linux"
+      TMPDIR: "/home/runner/work/tmpdir"
     defaults:
       run:
         shell: bash -l {0}
@@ -113,7 +114,6 @@ jobs:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
-          temp-reserve-mb: 15000
           swap-size-mb: 1024            
           remove-dotnet: 'true'
           remove-android: 'true'
@@ -135,6 +135,7 @@ jobs:
           CONDA_EDA_REV=$(git rev-parse HEAD)
           echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
           echo "::set-output name=CONDA_EDA_REV::$CONDA_EDA_REV"
+          mkdir -p $TMPDIR
 
       - name: restore open_pdks cache
         id: cache-open_pdks
