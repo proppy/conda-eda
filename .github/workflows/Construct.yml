@@ -98,7 +98,7 @@ jobs:
         if: steps.cache-open_pdks.outputs.cache-hit != 'true'
 
   open_pdks-linux-gf180mcuc:
-    continue-on-error: true    
+    continue-on-error: true
     outputs:
       OPEN_PDKS_REV: ${{ steps.env.outputs.OPEN_PDKS_REV }}
       CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
@@ -107,7 +107,7 @@ jobs:
       PACKAGE: 'misc/open_pdks.gf180mcuc'
       OS_NAME: 'linux'
       TMPDIR: '/home/runner/work/tmpdir'
-      OPEN_PDKS_REV: 'b8c6129fb60851c452a3136c2b8c603bb92cb180'      
+      OPEN_PDKS_REV: 'b8c6129fb60851c452a3136c2b8c603bb92cb180'
     defaults:
       run:
         shell: bash -l {0}
@@ -115,7 +115,8 @@ jobs:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
-          swap-size-mb: 1024            
+          swap-size-mb: 1024
+          overprovision-lvm: 'true'
           remove-dotnet: 'true'
           remove-android: 'true'
           remove-haskell: 'true'
@@ -188,7 +189,7 @@ jobs:
           name: 'digital.sky130a-installer'
           path: |
             /home/runner/work/conda-eda/conda-eda/digital.sky130a-0-Linux-x86_64.sh
-        
+
   analog-sky130a-installer:
     needs:
       - open_pdks-linux-sky130a
@@ -288,7 +289,7 @@ jobs:
             /home/runner/work/conda-eda/conda-eda/mixed-signal.sky130a-0-Linux-x86_64.sh
 
   mixed-signal-gf180mcuc-installer:
-    continue-on-error: true    
+    continue-on-error: true
     needs:
       - open_pdks-linux-gf180mcuc
       - ngspice-linux
@@ -342,7 +343,7 @@ jobs:
       - digital-sky130a-installer
       - analog-sky130a-installer
       - mixed-signal-sky130a-installer
-      - mixed-signal-gf180mcuc-installer      
+      - mixed-signal-gf180mcuc-installer
     runs-on: 'ubuntu-20.04'
     steps:
       - name: checkout conda-eda
@@ -365,6 +366,6 @@ jobs:
           name: ${{ env.TAG }}
           tag_name: ${{ env.TAG }}
           files: |
-            digital.*-installer/*.sh            
+            digital.*-installer/*.sh
             analog.*-installer/*.sh
             mixed-signal.*-installer/*.sh
