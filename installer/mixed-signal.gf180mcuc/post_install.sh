@@ -4,16 +4,11 @@ set -e
 # set gf180mcuc defaults
 cat > $PREFIX/etc/conda/activate.d/open_pdks_activate.sh <<EOF
 export PDK_ROOT=\$CONDA_PREFIX/share/pdk
-export PDK=gf180mcuc
+export PDK=gf180mcuC
 EOF
 
 cat > $PREFIX/etc/conda/activate.d/klayout_activate.sh <<EOF
 export KLAYOUT_HOME=\$CONDA_PREFIX/share/pdk/\$PDK/libs.tech/klayout
-EOF
-
-(cd $PREFIX/share/pdk/gf180mcuc/libs.tech/ngspice && ln spinit .spiceinit)
-cat > $PREFIX/etc/conda/activate.d/ngspice_activate.sh <<EOF
-export SPICE_USERINIT_DIR=\$CONDA_PREFIX/share/pdk/\$PDK/libs.tech/ngspice
 EOF
 
 mv $PREFIX/bin/magic $PREFIX/bin/magic.real
