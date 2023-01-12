@@ -16,5 +16,7 @@
 
 set -ex
 
+PDK_VERSION='8f01d8f4d17110a53080cafc52c7762b94101f1d'
+
 mkdir -p $PREFIX/share/pdk
-cp -ar pdk_root/gf180mcuC $PREFIX/share/pdk/
+curl --silent -L https://github.com/efabless/volare/releases/download/gf180mcu-$PDK_VERSION/default.tar.xz | tar -xvJf - -C $PREFIX/share/pdk gf180mcuC/
