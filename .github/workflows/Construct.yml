@@ -113,8 +113,11 @@ jobs:
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
-          overprovision-lvm: 'true'
+          temp-reserve-mb: 15000
+          swap-size-mb: 1024            
           remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
 
       - name: checkout conda-eda
         uses: actions/checkout@v3
