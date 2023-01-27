@@ -18,3 +18,4 @@ set -ex
 
 mkdir -p $PREFIX/share/pdk
 curl --silent -L https://github.com/efabless/volare/releases/download/gf180mcu-$OPEN_PDKS_REV/default.tar.xz | tar -xvJf - -C $PREFIX/share/pdk gf180mcuC/
+curl --silent -L https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_pr/archive/refs/heads/main.tar.gz | tar xvzf - --strip-components=4 -C PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/tests/ globalfoundries-pdk-libs-gf180mcu_fd_pr-main/cells/xschem/tests/
