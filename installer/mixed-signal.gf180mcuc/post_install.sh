@@ -18,7 +18,6 @@ EOF
 chmod +x $PREFIX/bin/magic
 
 mv $PREFIX/bin/xschem $PREFIX/bin/xschem.real
-
 cat > $PREFIX/bin/xschem <<EOF
 xschem.real --rcfile \$CONDA_PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/xschemrc \$@
 EOF

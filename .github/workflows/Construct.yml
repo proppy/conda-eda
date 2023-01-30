@@ -338,12 +338,73 @@ jobs:
           path: |
             /home/runner/work/conda-eda/conda-eda/mixed-signal.gf180mcuc-0-Linux-x86_64.sh
 
+  mixed-signal-installer:
+    continue-on-error: true
+    needs:
+      - open_pdks-linux-sky130a      
+      - open_pdks-linux-gf180mcuc
+      - ngspice-linux
+    env:
+      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-linux-sky130a.outputs.OPEN_PDKS_REV }}      
+      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-linux-gf180mcuc.outputs.OPEN_PDKS_REV }}
+      NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
+      CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
+    runs-on: 'ubuntu-20.04'
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+
+      - name: restore open_pdks sky130A cache
+        id: cache-open_pdks
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
+          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+          
+      - name: restore open_pdks gf180mcuC cache
+        id: cache-open_pdks
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
+          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_GF180MCUC_REV }}-${{ env.CONDA_EDA_REV }}
+
+      - name: restore ngspice cache
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2
+          key: ${{ runner.os }}-ngspice-${{ env.NGSPICE_REV }}-${{ env.CONDA_EDA_REV }}
+
+      - name: construct installer
+        run: |
+          conda install constructor conda-build
+          mkdir -p /tmp/conda-bld/{linux-64,noarch}
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/          
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/linux-64/
+          conda index /tmp/conda-bld
+          constructor installer/mixed-signal/
+
+      - name: archive installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'mixed-signal-installer'
+          path: |
+            /home/runner/work/conda-eda/conda-eda/mixed-signal-0-Linux-x86_64.sh
+
   release:
     needs:
       - digital-sky130a-installer
       - analog-sky130a-installer
       - mixed-signal-sky130a-installer
       - mixed-signal-gf180mcuc-installer
+      - mixed-signal-installer
     runs-on: 'ubuntu-20.04'
     steps:
       - name: checkout conda-eda
@@ -366,6 +427,6 @@ jobs:
           name: ${{ env.TAG }}
           tag_name: ${{ env.TAG }}
           files: |
-            digital.*-installer/*.sh
-            analog.*-installer/*.sh
-            mixed-signal.*-installer/*.sh
+            digital*-installer/*.sh
+            analog*-installer/*.sh
+            mixed-signal*-installer/*.sh
