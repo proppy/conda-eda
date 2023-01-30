@@ -362,14 +362,14 @@ jobs:
           activate-environment: installer-env
 
       - name: restore open_pdks sky130A cache
-        id: cache-open_pdks
+        id: cache-sky130a-open_pdks
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
           key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
           
       - name: restore open_pdks gf180mcuC cache
-        id: cache-open_pdks
+        id: cache-gf180mcu-open_pdks
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
