@@ -135,6 +135,7 @@ jobs:
 
       - name: smoke test
         run: |
+          rm -fR /tmp/conda-bld/noarch/
           bash digital.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -183,6 +184,7 @@ jobs:
 
       - name: smoke test
         run: |
+          rm -fR /tmp/conda-bld/noarch/          
           bash analog.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -231,6 +233,7 @@ jobs:
 
       - name: smoke test
         run: |
+          rm -fR /tmp/conda-bld/noarch/          
           bash mixed-signal.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -279,6 +282,7 @@ jobs:
 
       - name: smoke test
         run: |
+          rm -fR /tmp/conda-bld/noarch/          
           bash digital.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -327,6 +331,7 @@ jobs:
 
       - name: smoke test
         run: |
+          rm -fR /tmp/conda-bld/noarch/          
           bash analog.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -375,6 +380,7 @@ jobs:
 
       - name: smoke test
         run: |
+          rm -fR /tmp/conda-bld/noarch/          
           bash mixed-signal.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -434,6 +440,7 @@ jobs:
 
       - name: smoke test
         run: |
+          rm -fR /tmp/conda-bld/noarch/          
           bash mixed-signal-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
