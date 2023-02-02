@@ -14,48 +14,6 @@ defaults:
     shell: bash
 
 jobs:
-  ngspice-linux:
-    outputs:
-      NGSPICE_REV: ${{ steps.env.outputs.NGSPICE_REV }}
-      CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
-    runs-on: 'ubuntu-20.04'
-    env:
-      PACKAGE: 'sim/ngspice'
-      OS_NAME: 'linux'
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
-
-      - name: env
-        id: env
-        run: |
-          NGSPICE_REV=$(git ls-remote git://git.code.sf.net/p/ngspice/ngspice.git HEAD | cut -f 1)
-          echo "NGSPICE_REV=$NGSPICE_REV" >> $GITHUB_ENV
-          echo "::set-output name=NGSPICE_REV::$NGSPICE_REV"
-          CONDA_EDA_REV=$(git rev-parse HEAD)
-          echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
-          echo "::set-output name=CONDA_EDA_REV::$CONDA_EDA_REV"
-
-      - name: restore ngspice cache
-        id: cache-ngspice
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2
-          key: ${{ runner.os }}-ngspice-${{ env.NGSPICE_REV }}-${{ env.CONDA_EDA_REV }}
-
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: ./ci
-        if: steps.cache-ngspice.outputs.cache-hit != 'true'
-
   open_pdks-linux-sky130a:
     outputs:
       OPEN_PDKS_REV: ${{ steps.env.outputs.OPEN_PDKS_REV }}
@@ -193,11 +151,9 @@ jobs:
   analog-sky130a-installer:
     needs:
       - open_pdks-linux-sky130a
-      - ngspice-linux
     env:
       OPEN_PDKS_REV: ${{ needs.open_pdks-linux-sky130a.outputs.OPEN_PDKS_REV }}
-      NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
-      CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-linux-sky130a.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -217,17 +173,10 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
           key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
 
-      - name: restore ngspice cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2
-          key: ${{ runner.os }}-ngspice-${{ env.NGSPICE_REV }}-${{ env.CONDA_EDA_REV }}
-
       - name: construct installer
         run: |
           conda install constructor conda-build
           mkdir -p /tmp/conda-bld/{linux-64,noarch}
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/analog.sky130a/
@@ -242,11 +191,9 @@ jobs:
   mixed-signal-sky130a-installer:
     needs:
       - open_pdks-linux-sky130a
-      - ngspice-linux
     env:
       OPEN_PDKS_REV: ${{ needs.open_pdks-linux-sky130a.outputs.OPEN_PDKS_REV }}
-      NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
-      CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-linux-sky130a.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -266,17 +213,10 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
           key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
 
-      - name: restore ngspice cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2
-          key: ${{ runner.os }}-ngspice-${{ env.NGSPICE_REV }}-${{ env.CONDA_EDA_REV }}
-
       - name: construct installer
         run: |
           conda install constructor conda-build
           mkdir -p /tmp/conda-bld/{linux-64,noarch}
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.sky130a/
@@ -292,11 +232,9 @@ jobs:
     continue-on-error: true
     needs:
       - open_pdks-linux-gf180mcuc
-      - ngspice-linux
     env:
       OPEN_PDKS_REV: ${{ needs.open_pdks-linux-gf180mcuc.outputs.OPEN_PDKS_REV }}
-      NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
-      CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-linux-gf180mcuc.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -316,17 +254,10 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
           key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
 
-      - name: restore ngspice cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2
-          key: ${{ runner.os }}-ngspice-${{ env.NGSPICE_REV }}-${{ env.CONDA_EDA_REV }}
-
       - name: construct installer
         run: |
           conda install constructor conda-build
           mkdir -p /tmp/conda-bld/{linux-64,noarch}
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.gf180mcuc/
@@ -343,12 +274,10 @@ jobs:
     needs:
       - open_pdks-linux-sky130a      
       - open_pdks-linux-gf180mcuc
-      - ngspice-linux
     env:
       OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-linux-sky130a.outputs.OPEN_PDKS_REV }}      
       OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-linux-gf180mcuc.outputs.OPEN_PDKS_REV }}
-      NGSPICE_REV: ${{ needs.ngspice-linux.outputs.NGSPICE_REV }}
-      CONDA_EDA_REV: ${{ needs.ngspice-linux.outputs.CONDA_EDA_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-linux-gf180mcuc.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -375,17 +304,10 @@ jobs:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
           key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_GF180MCUC_REV }}-${{ env.CONDA_EDA_REV }}
 
-      - name: restore ngspice cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2
-          key: ${{ runner.os }}-ngspice-${{ env.NGSPICE_REV }}-${{ env.CONDA_EDA_REV }}
-
       - name: construct installer
         run: |
           conda install constructor conda-build
           mkdir -p /tmp/conda-bld/{linux-64,noarch}
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/ngspice-*.tar.bz2 /tmp/conda-bld/linux-64/
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/          
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
