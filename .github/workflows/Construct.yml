@@ -129,6 +129,7 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/digital.sky130a/
+          md5sum digital.sky130a-0-Linux-x86_64.sh
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -169,6 +170,7 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch
           conda index /tmp/conda-bld
           constructor installer/analog.sky130a/
+          md5sum analog.sky130a-0-Linux-x86_64.sh
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -209,6 +211,7 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.sky130a/
+          md5sum mixed-signal.sky130a-0-Linux-x86_64.sh
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -250,6 +253,7 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.gf180mcuc/
+          md5sum mixed-signal.gf180mcuc-0-Linux-x86_64.sh
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -301,6 +305,7 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal/
+          md5sum mixed-signal-0-Linux-x86_64.sh
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -324,6 +329,9 @@ jobs:
           fetch-depth: 0
 
       - uses: actions/download-artifact@v3
+
+      - run: |
+          md5sum digital*-installer/*.sh analog*-installer/*.sh mixed-signal*-installer/*.sh
 
       - run: |
           git config --local user.name conda-eda@bot
