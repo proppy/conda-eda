@@ -29,3 +29,5 @@ ln -s ../lvs $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/lvs
 mkdir $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/pymacros
 ln -s ../../pymacros $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/pymacros/cells
 ln -s ../gf180mcu.lym $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/pymacros/gf180mcu.lym
+# merge drc
+cat $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/*.drc > /tmp/gf180mcu.drc && mv /tmp/gf180mcu.drc $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/
