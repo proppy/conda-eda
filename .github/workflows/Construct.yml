@@ -14,7 +14,7 @@ defaults:
     shell: bash
 
 jobs:
-  open_pdks-linux-sky130a:
+  open_pdks-sky130a:
     outputs:
       OPEN_PDKS_REV: ${{ steps.env.outputs.OPEN_PDKS_REV }}
       CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
@@ -55,7 +55,7 @@ jobs:
       - uses: ./ci
         if: steps.cache-open_pdks.outputs.cache-hit != 'true'
 
-  open_pdks-linux-gf180mcuc:
+  open_pdks-gf180mcuc:
     continue-on-error: true
     outputs:
       OPEN_PDKS_REV: ${{ steps.env.outputs.OPEN_PDKS_REV }}
@@ -64,21 +64,11 @@ jobs:
     env:
       PACKAGE: 'misc/open_pdks.gf180mcuc'
       OS_NAME: 'linux'
-      TMPDIR: '/home/runner/work/tmpdir'
       OPEN_PDKS_REV: 'b8c6129fb60851c452a3136c2b8c603bb92cb180'
     defaults:
       run:
         shell: bash -l {0}
     steps:
-      - name: Maximize build space
-        uses: easimon/maximize-build-space@master
-        with:
-          swap-size-mb: 1024
-          overprovision-lvm: 'true'
-          remove-dotnet: 'true'
-          remove-android: 'true'
-          remove-haskell: 'true'
-
       - name: checkout conda-eda
         uses: actions/checkout@v3
 
@@ -93,7 +83,6 @@ jobs:
           CONDA_EDA_REV=$(git rev-parse HEAD)
           echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
           echo "::set-output name=CONDA_EDA_REV::$CONDA_EDA_REV"
-          mkdir -p $TMPDIR
 
       - name: restore open_pdks cache
         id: cache-open_pdks
@@ -110,10 +99,10 @@ jobs:
 
   digital-sky130a-installer:
     needs:
-      - open_pdks-linux-sky130a
+      - open_pdks-sky130a
     env:
-      OPEN_PDKS_REV: ${{ needs.open_pdks-linux-sky130a.outputs.OPEN_PDKS_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-linux-sky130a.outputs.CONDA_EDA_REV }}
+      OPEN_PDKS_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-sky130a.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -136,8 +125,8 @@ jobs:
       - name: construct installer
         run: |
           conda install constructor conda-build
-          mkdir -p /tmp/conda-bld/{linux-64,noarch}
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/
+          mkdir -p /tmp/conda-bld/noarch
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/digital.sky130a/
 
@@ -150,10 +139,10 @@ jobs:
 
   analog-sky130a-installer:
     needs:
-      - open_pdks-linux-sky130a
+      - open_pdks-sky130a
     env:
-      OPEN_PDKS_REV: ${{ needs.open_pdks-linux-sky130a.outputs.OPEN_PDKS_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-linux-sky130a.outputs.CONDA_EDA_REV }}
+      OPEN_PDKS_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-sky130a.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -176,8 +165,8 @@ jobs:
       - name: construct installer
         run: |
           conda install constructor conda-build
-          mkdir -p /tmp/conda-bld/{linux-64,noarch}
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/
+          mkdir -p /tmp/conda-bld/noarch
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch
           conda index /tmp/conda-bld
           constructor installer/analog.sky130a/
 
@@ -190,10 +179,10 @@ jobs:
 
   mixed-signal-sky130a-installer:
     needs:
-      - open_pdks-linux-sky130a
+      - open_pdks-sky130a
     env:
-      OPEN_PDKS_REV: ${{ needs.open_pdks-linux-sky130a.outputs.OPEN_PDKS_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-linux-sky130a.outputs.CONDA_EDA_REV }}
+      OPEN_PDKS_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-sky130a.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -216,8 +205,8 @@ jobs:
       - name: construct installer
         run: |
           conda install constructor conda-build
-          mkdir -p /tmp/conda-bld/{linux-64,noarch}
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/
+          mkdir -p /tmp/conda-bld/noarch
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.sky130a/
 
@@ -231,10 +220,10 @@ jobs:
   mixed-signal-gf180mcuc-installer:
     continue-on-error: true
     needs:
-      - open_pdks-linux-gf180mcuc
+      - open_pdks-gf180mcuc
     env:
-      OPEN_PDKS_REV: ${{ needs.open_pdks-linux-gf180mcuc.outputs.OPEN_PDKS_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-linux-gf180mcuc.outputs.CONDA_EDA_REV }}
+      OPEN_PDKS_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-gf180mcuc.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -257,8 +246,8 @@ jobs:
       - name: construct installer
         run: |
           conda install constructor conda-build
-          mkdir -p /tmp/conda-bld/{linux-64,noarch}
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/linux-64/
+          mkdir -p /tmp/conda-bld/noarch
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.gf180mcuc/
 
@@ -272,12 +261,12 @@ jobs:
   mixed-signal-installer:
     continue-on-error: true
     needs:
-      - open_pdks-linux-sky130a      
-      - open_pdks-linux-gf180mcuc
+      - open_pdks-sky130a      
+      - open_pdks-gf180mcuc
     env:
-      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-linux-sky130a.outputs.OPEN_PDKS_REV }}      
-      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-linux-gf180mcuc.outputs.OPEN_PDKS_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-linux-gf180mcuc.outputs.CONDA_EDA_REV }}
+      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_REV }}      
+      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-gf180mcuc.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -307,9 +296,9 @@ jobs:
       - name: construct installer
         run: |
           conda install constructor conda-build
-          mkdir -p /tmp/conda-bld/{linux-64,noarch}
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/linux-64/          
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/linux-64/
+          mkdir -p /tmp/conda-bld/noarch
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch/
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal/
 
