@@ -8,7 +8,7 @@ export PDK=gf180mcuC
 EOF
 
 cat > $PREFIX/etc/conda/activate.d/klayout_activate.sh <<EOF
-export KLAYOUT_HOME=\$CONDA_PREFIX/share/pdk/gf180mcuC/libs.tech/klayout
+export KLAYOUT_PATH=\$CONDA_PREFIX/share/pdk/gf180mcuC/libs.tech/klayout
 EOF
 
 mv $PREFIX/bin/magic $PREFIX/bin/magic.real

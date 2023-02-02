@@ -19,4 +19,13 @@ set -ex
 mkdir -p $PREFIX/share/pdk
 curl --silent -L https://github.com/efabless/volare/releases/download/gf180mcu-$OPEN_PDKS_REV/default.tar.xz | tar -xvJf - -C $PREFIX/share/pdk gf180mcuC/
 curl --silent -L https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_pr/archive/refs/heads/main.tar.gz | tar xvzf - --strip-components=4 -C $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/tests/ globalfoundries-pdk-libs-gf180mcu_fd_pr-main/cells/xschem/tests/
-sed -i -e 59d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/tests/0_top.sch 
+sed -i -e 59d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/tests/0_top.sch
+
+# link klayout drc/lvs/pymacros path with symlink for interactive usage
+# keep existing file in place because openlane need them
+# https://www.klayout.de/doc/about/technology_manager.html#:~:text=The%20technology%20folder%20may%20have%20subfolders%20to%20hold%20library%20files%2C%20macros%2C%20DRC%20runsets%2C%20LEF%20files%20and%20other%20pieces%20of%20the%20technology%20package.
+ln -s ../drc $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/drc
+ln -s ../lvs $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/lvs
+mkdir $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/pymacros
+ln -s ../../pymacros $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/pymacros/cells
+ln -s ../gf180mcu.lym $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/pymacros/gf180mcu.lym
