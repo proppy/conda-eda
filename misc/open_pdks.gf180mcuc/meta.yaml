@@ -17,7 +17,6 @@ build:
   string: {{ environ.get('DATE_STR') }}
   script_env:
     - CI
-    - TMPDIR
     - OPEN_PDKS_REV
 
 test:
