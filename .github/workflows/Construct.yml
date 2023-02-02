@@ -128,7 +128,14 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/digital.sky130a/
+
+      - name: dump checksum
+        run: |
           md5sum digital.sky130a-0-Linux-x86_64.sh
+
+      - name: smoke test
+        run: |
+          bash digital.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -169,7 +176,14 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch
           conda index /tmp/conda-bld
           constructor installer/analog.sky130a/
+
+      - name: dump checksum
+        run: |
           md5sum analog.sky130a-0-Linux-x86_64.sh
+
+      - name: smoke test
+        run: |
+          bash analog.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -210,7 +224,14 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.sky130a/
+
+      - name: dump checksum
+        run: |
           md5sum mixed-signal.sky130a-0-Linux-x86_64.sh
+
+      - name: smoke test
+        run: |
+          bash mixed-signal.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -251,7 +272,14 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/digital.gf180mcuc/
+
+      - name: dump checksum
+        run: |
           md5sum digital.gf180mcuc-0-Linux-x86_64.sh
+
+      - name: smoke test
+        run: |
+          bash digital.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -292,7 +320,14 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch
           conda index /tmp/conda-bld
           constructor installer/analog.gf180mcuc/
+
+      - name: dump checksum
+        run: |
           md5sum analog.gf180mcuc-0-Linux-x86_64.sh
+
+      - name: smoke test
+        run: |
+          bash analog.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -333,7 +368,14 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.gf180mcuc/
+
+      - name: dump checksum
+        run: |
           md5sum mixed-signal.gf180mcuc-0-Linux-x86_64.sh
+
+      - name: smoke test
+        run: |
+          bash mixed-signal.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -345,10 +387,10 @@ jobs:
   mixed-signal-installer:
     continue-on-error: true
     needs:
-      - open_pdks-sky130a      
+      - open_pdks-sky130a
       - open_pdks-gf180mcuc
     env:
-      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_SKY130A_REV }}      
+      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_SKY130A_REV }}
       OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_GF180MCUC_REV }}
       CONDA_EDA_REV: ${{ needs.open_pdks-gf180mcuc.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
@@ -369,7 +411,7 @@ jobs:
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
           key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_SKY130A_REV }}-${{ env.CONDA_EDA_REV }}
-          
+
       - name: restore open_pdks gf180mcuC cache
         id: cache-gf180mcu-open_pdks
         uses: actions/cache@v3
@@ -385,7 +427,14 @@ jobs:
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal/
+
+      - name: dump checksum
+        run: |
           md5sum mixed-signal-0-Linux-x86_64.sh
+
+      - name: smoke test
+        run: |
+          bash mixed-signal-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
         uses: actions/upload-artifact@v3
@@ -399,7 +448,7 @@ jobs:
       - digital-sky130a-installer
       - analog-sky130a-installer
       - mixed-signal-sky130a-installer
-      - digital-gf180mcuc-installer      
+      - digital-gf180mcuc-installer
       - analog-gf180mcuc-installer
       - mixed-signal-gf180mcuc-installer
       - mixed-signal-installer
@@ -412,7 +461,8 @@ jobs:
 
       - uses: actions/download-artifact@v3
 
-      - run: |
+      - name: dump checksums
+        run: |
           md5sum digital*-installer/*.sh analog*-installer/*.sh mixed-signal*-installer/*.sh
 
       - run: |
