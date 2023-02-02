@@ -16,13 +16,13 @@ defaults:
 jobs:
   open_pdks-sky130a:
     outputs:
-      OPEN_PDKS_REV: ${{ steps.env.outputs.OPEN_PDKS_REV }}
+      OPEN_PDKS_SKY130A_REV: ${{ steps.env.outputs.OPEN_PDKS_SKY130A_REV }}
       CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     env:
       PACKAGE: 'misc/open_pdks.sky130a'
       OS_NAME: 'linux'
-      OPEN_PDKS_REV: '9f1c2b06d2b5a6708cfe0b55679c7e84d37220cc'
+      OPEN_PDKS_SKY130A_REV: '9f1c2b06d2b5a6708cfe0b55679c7e84d37220cc'
     defaults:
       run:
         shell: bash -l {0}
@@ -37,7 +37,7 @@ jobs:
       - name: env
         id: env
         run: |
-          echo "::set-output name=OPEN_PDKS_REV::$OPEN_PDKS_REV"
+          echo "::set-output name=OPEN_PDKS_SKY130A_REV::$OPEN_PDKS_SKY130A_REV"
           CONDA_EDA_REV=$(git rev-parse HEAD)
           echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
           echo "::set-output name=CONDA_EDA_REV::$CONDA_EDA_REV"
@@ -47,7 +47,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_SKY130A_REV }}-${{ env.CONDA_EDA_REV }}
 
       - name: checkout conda-eda
         uses: actions/checkout@v3
@@ -56,15 +56,14 @@ jobs:
         if: steps.cache-open_pdks.outputs.cache-hit != 'true'
 
   open_pdks-gf180mcuc:
-    continue-on-error: true
     outputs:
-      OPEN_PDKS_REV: ${{ steps.env.outputs.OPEN_PDKS_REV }}
+      OPEN_PDKS_GF180MCUC_REV: ${{ steps.env.outputs.OPEN_PDKS_GF180MCUC_REV }}
       CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     env:
       PACKAGE: 'misc/open_pdks.gf180mcuc'
       OS_NAME: 'linux'
-      OPEN_PDKS_REV: 'b8c6129fb60851c452a3136c2b8c603bb92cb180'
+      OPEN_PDKS_GF180MCUC_REV: 'b8c6129fb60851c452a3136c2b8c603bb92cb180'
     defaults:
       run:
         shell: bash -l {0}
@@ -79,7 +78,7 @@ jobs:
       - name: env
         id: env
         run: |
-          echo "::set-output name=OPEN_PDKS_REV::$OPEN_PDKS_REV"
+          echo "::set-output name=OPEN_PDKS_GF180MCUC_REV::$OPEN_PDKS_GF180MCUC_REV"
           CONDA_EDA_REV=$(git rev-parse HEAD)
           echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
           echo "::set-output name=CONDA_EDA_REV::$CONDA_EDA_REV"
@@ -89,7 +88,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_GF180MCUC_REV }}-${{ env.CONDA_EDA_REV }}
 
       - name: checkout conda-eda
         uses: actions/checkout@v3
@@ -101,7 +100,7 @@ jobs:
     needs:
       - open_pdks-sky130a
     env:
-      OPEN_PDKS_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_REV }}
+      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_SKY130A_REV }}
       CONDA_EDA_REV: ${{ needs.open_pdks-sky130a.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
@@ -120,11 +119,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_SKY130A_REV }}-${{ env.CONDA_EDA_REV }}
 
       - name: construct installer
         run: |
-          conda install constructor=3.3.1 conda-build
+          conda install constructor conda-build
           mkdir -p /tmp/conda-bld/noarch
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
@@ -142,7 +141,7 @@ jobs:
     needs:
       - open_pdks-sky130a
     env:
-      OPEN_PDKS_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_REV }}
+      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_SKY130A_REV }}
       CONDA_EDA_REV: ${{ needs.open_pdks-sky130a.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
@@ -161,7 +160,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_SKY130A_REV }}-${{ env.CONDA_EDA_REV }}
 
       - name: construct installer
         run: |
@@ -183,7 +182,7 @@ jobs:
     needs:
       - open_pdks-sky130a
     env:
-      OPEN_PDKS_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_REV }}
+      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_SKY130A_REV }}
       CONDA_EDA_REV: ${{ needs.open_pdks-sky130a.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
@@ -202,7 +201,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_SKY130A_REV }}-${{ env.CONDA_EDA_REV }}
 
       - name: construct installer
         run: |
@@ -220,12 +219,11 @@ jobs:
           path: |
             /home/runner/work/conda-eda/conda-eda/mixed-signal.sky130a-0-Linux-x86_64.sh
 
-  mixed-signal-gf180mcuc-installer:
-    continue-on-error: true
+  digital-gf180mcuc-installer:
     needs:
       - open_pdks-gf180mcuc
     env:
-      OPEN_PDKS_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_REV }}
+      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_GF180MCUC_REV }}
       CONDA_EDA_REV: ${{ needs.open_pdks-gf180mcuc.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
@@ -244,7 +242,89 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_GF180MCUC_REV }}-${{ env.CONDA_EDA_REV }}
+
+      - name: construct installer
+        run: |
+          conda install constructor conda-build
+          mkdir -p /tmp/conda-bld/noarch
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
+          conda index /tmp/conda-bld
+          constructor installer/digital.gf180mcuc/
+          md5sum digital.gf180mcuc-0-Linux-x86_64.sh
+
+      - name: archive installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'digital.gf180mcuc-installer'
+          path: |
+            /home/runner/work/conda-eda/conda-eda/digital.gf180mcuc-0-Linux-x86_64.sh
+
+  analog-gf180mcuc-installer:
+    needs:
+      - open_pdks-gf180mcuc
+    env:
+      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_GF180MCUC_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-gf180mcuc.outputs.CONDA_EDA_REV }}
+    runs-on: 'ubuntu-20.04'
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+
+      - name: restore open_pdks cache
+        id: cache-open_pdks
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
+          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_GF180MCUC_REV }}-${{ env.CONDA_EDA_REV }}
+
+      - name: construct installer
+        run: |
+          conda install constructor conda-build
+          mkdir -p /tmp/conda-bld/noarch
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch
+          conda index /tmp/conda-bld
+          constructor installer/analog.gf180mcuc/
+          md5sum analog.gf180mcuc-0-Linux-x86_64.sh
+
+      - name: archive installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'analog.gf180mcuc-installer'
+          path: |
+            /home/runner/work/conda-eda/conda-eda/analog.gf180mcuc-0-Linux-x86_64.sh
+
+  mixed-signal-gf180mcuc-installer:
+    needs:
+      - open_pdks-gf180mcuc
+    env:
+      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_GF180MCUC_REV }}
+      CONDA_EDA_REV: ${{ needs.open_pdks-gf180mcuc.outputs.CONDA_EDA_REV }}
+    runs-on: 'ubuntu-20.04'
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: checkout conda-eda
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: installer-env
+
+      - name: restore open_pdks cache
+        id: cache-open_pdks
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
+          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_GF180MCUC_REV }}-${{ env.CONDA_EDA_REV }}
 
       - name: construct installer
         run: |
@@ -268,8 +348,8 @@ jobs:
       - open_pdks-sky130a      
       - open_pdks-gf180mcuc
     env:
-      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_REV }}      
-      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_REV }}
+      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_SKY130A_REV }}      
+      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_GF180MCUC_REV }}
       CONDA_EDA_REV: ${{ needs.open_pdks-gf180mcuc.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
@@ -319,6 +399,8 @@ jobs:
       - digital-sky130a-installer
       - analog-sky130a-installer
       - mixed-signal-sky130a-installer
+      - digital-gf180mcuc-installer      
+      - analog-gf180mcuc-installer
       - mixed-signal-gf180mcuc-installer
       - mixed-signal-installer
     runs-on: 'ubuntu-20.04'
