@@ -33,7 +33,7 @@ ln -s ../gf180mcu.lym $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/pymacro
 DRC_MERGE_DIR=$(mktemp -d)
 cp $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/rule_decks/*.drc $DRC_MERGE_DIR/
 rm $DRC_MERGE_DIR/{main,tail}.drc
-echo 'metal_layer="5LM"' > $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
+echo 'metal_level="5LM"' > $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
 cat $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/rule_decks/main.drc >> $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
 cat $DRC_MERGE_DIR/*.drc >> $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
 cat $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/rule_decks/tail.drc >> $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
