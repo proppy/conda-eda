@@ -20,6 +20,7 @@ mkdir -p $PREFIX/share/pdk
 curl --silent -L https://github.com/efabless/volare/releases/download/gf180mcu-$OPEN_PDKS_REV/default.tar.xz | tar -xvJf - -C $PREFIX/share/pdk gf180mcuC/
 curl --silent -L https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_pr/archive/refs/heads/main.tar.gz | tar xvzf - --strip-components=4 -C $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/tests/ globalfoundries-pdk-libs-gf180mcu_fd_pr-main/cells/xschem/tests/
 sed -i -e 59d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/tests/0_top.sch
+curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/archive/refs/heads/main.tar.gz | tar xvzf - --strip-components=3 -C $PREFIX/share/pdk/gf180mcuC/libs.tech/rules/klayout/ globalfoundries-pdk-libs-gf180mcu_fd_pr-main/rules/klayout/macros
 
 # link klayout drc/lvs/pymacros path with symlink for interactive usage
 # keep existing file in place because openlane need them
