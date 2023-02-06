@@ -40,6 +40,6 @@ cat $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/rule_decks/tail.drc >> $PR
 sed -i -e 's/\.path//' $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
 sed -i -e 's/METAL_LEVEL = "6LM"/METAL_LEVEL = "5LM"/' $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
 # patch xschem netlist fixup
-curl --silent -L https://patch-diff.githubusercontent.com/raw/google/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/99.patch | patch $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/lvs/gf180mcu.lvs
+curl --silent -L https://patch-diff.githubusercontent.com/raw/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/22.patch | patch $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/lvs/gf180mcu.lvs
 # patch default substrate name
 sed -i -e 's/gf180mcu_gnd/GND/' $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/lvs/gf180mcu.lvs
