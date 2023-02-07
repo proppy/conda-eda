@@ -18,28 +18,33 @@ set -ex
 
 mkdir -p $PREFIX/share/pdk
 curl --silent -L https://github.com/efabless/volare/releases/download/gf180mcu-$OPEN_PDKS_REV/default.tar.xz | tar -xvJf - -C $PREFIX/share/pdk gf180mcuC/
-curl --silent -L https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_pr/archive/refs/heads/main.tar.gz | tar xvzf - --strip-components=4 -C $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/tests/ globalfoundries-pdk-libs-gf180mcu_fd_pr-main/cells/xschem/tests/
-sed -i -e 59d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/tests/0_top.sch
+
+# fix xschem tests
+curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/24.patch | patch -d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem -p3
+
+# patch improved xschem LVS export
+curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/23.patch | patch -d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem -p3
+
+# fix drc rules
+curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/25.patch | patch -d $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout -p3
+
+# add missing macros
 curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/archive/refs/heads/main.tar.gz | tar xvzf - --strip-components=3 -C $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/ globalfoundries-pdk-libs-gf180mcu_fd_pr-main/rules/klayout/macros
 
 # link klayout drc/lvs/pymacros path with symlink for interactive usage
 # keep existing file in place because openlane need them
 # https://www.klayout.de/doc/about/technology_manager.html#:~:text=The%20technology%20folder%20may%20have%20subfolders%20to%20hold%20library%20files%2C%20macros%2C%20DRC%20runsets%2C%20LEF%20files%20and%20other%20pieces%20of%20the%20technology%20package.
+# https://github.com/RTimothyEdwards/open_pdks/issues/346
 ln -s ../drc $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/drc
 ln -s ../lvs $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/lvs
 mkdir $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/pymacros
 ln -s ../../pymacros $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/pymacros/cells
 ln -s ../gf180mcu.lym $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/tech/pymacros/gf180mcu.lym
-# merge drc
+
+# merge drc files for interactive usage
 DRC_MERGE_DIR=$(mktemp -d)
 cp $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/rule_decks/*.drc $DRC_MERGE_DIR/
 rm $DRC_MERGE_DIR/{main,tail}.drc
 cat $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/rule_decks/main.drc > $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
 cat $DRC_MERGE_DIR/*.drc >> $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
 cat $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/rule_decks/tail.drc >> $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
-sed -i -e 's/\.path//' $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
-sed -i -e 's/METAL_LEVEL = "6LM"/METAL_LEVEL = "5LM"/' $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/drc/gf180mcu.drc
-# patch xschem netlist fixup
-curl --silent -L https://patch-diff.githubusercontent.com/raw/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/22.patch | patch $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/lvs/gf180mcu.lvs
-# patch default substrate name
-sed -i -e 's/gf180mcu_gnd/GND/' $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/lvs/gf180mcu.lvs
