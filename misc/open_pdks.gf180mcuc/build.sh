@@ -28,6 +28,9 @@ curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_f
 # fix drc rules
 curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/25.patch | patch -d $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout -p3
 
+# discover xschem LVS netlist
+curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/26.patch | patch -d $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout -p3
+
 # add missing macros
 curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/archive/refs/heads/main.tar.gz | tar xvzf - --strip-components=3 -C $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/ globalfoundries-pdk-libs-gf180mcu_fd_pr-main/rules/klayout/macros
 
