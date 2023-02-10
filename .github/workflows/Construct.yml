@@ -270,7 +270,7 @@ jobs:
 
       - name: construct installer
         run: |
-          conda install constructor conda-build
+          conda install ctools/label/dev::constructor conda-build
           mkdir -p /tmp/conda-bld/noarch
           cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
           conda index /tmp/conda-bld
