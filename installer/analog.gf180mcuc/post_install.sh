@@ -13,12 +13,14 @@ EOF
 
 mv $PREFIX/bin/magic $PREFIX/bin/magic.real
 cat > $PREFIX/bin/magic <<EOF
+#!/bin/bash
 magic.real -rcfile \$CONDA_PREFIX/share/pdk/gf180mcuC/libs.tech/magic/gf180mcuC.magicrc \$@
 EOF
 chmod +x $PREFIX/bin/magic
 
 mv $PREFIX/bin/xschem $PREFIX/bin/xschem.real
 cat > $PREFIX/bin/xschem <<EOF
+#!/bin/bash
 xschem.real --rcfile \$CONDA_PREFIX/share/pdk/gf180mcuC/libs.tech/xschem/xschemrc \$@
 EOF
 chmod +x $PREFIX/bin/xschem
