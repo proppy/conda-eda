@@ -31,8 +31,12 @@ curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_f
 # discover xschem LVS netlist
 curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/26.patch | patch -d $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout -p3
 
-# add missing macros
+# add missing macros for klayout menus
 curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/archive/refs/heads/main.tar.gz | tar xvzf - --strip-components=3 -C $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/ globalfoundries-pdk-libs-gf180mcu_fd_pr-main/rules/klayout/macros
+
+# revert to non-gdsfactory pcells
+rm -r $CONDA_PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/pymacros/
+curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/tarball/2f6d54028df54279a92960a545680baf09a1154a | tar xvzf - --strip-components=3 -C $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout/ efabless-globalfoundries-pdk-libs-gf180mcu_fd_pr-2f6d540/cells/klayout/ --exclude='*testing*'
 
 # link klayout drc/lvs/pymacros path with symlink for interactive usage
 # keep existing file in place because openlane need them
