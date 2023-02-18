@@ -20,14 +20,8 @@ mkdir -p $PREFIX/share/pdk
 curl --silent -L https://github.com/efabless/volare/releases/download/gf180mcu-$OPEN_PDKS_REV/default.tar.xz | tar -xvJf - -C $PREFIX/share/pdk gf180mcuC/
 
 # fix xschem tests
-curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/24.patch | patch -d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem -p3
 curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/29.patch | patch -d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem -p3
 
-# patch improved xschem LVS export
-curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/23.patch | patch -d $PREFIX/share/pdk/gf180mcuC/libs.tech/xschem -p3
-
-# fix drc rules
-curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/25.patch | patch -d $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout -p3
 
 # discover xschem LVS netlist
 curl --silent -L https://github.com/efabless/globalfoundries-pdk-libs-gf180mcu_fd_pr/pull/26.patch | patch -d $PREFIX/share/pdk/gf180mcuC/libs.tech/klayout -p3
