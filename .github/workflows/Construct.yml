@@ -22,7 +22,7 @@ jobs:
     env:
       PACKAGE: 'misc/open_pdks.sky130a'
       OS_NAME: 'linux'
-      OPEN_PDKS_REV: '9f1c2b06d2b5a6708cfe0b55679c7e84d37220cc'
+      OPEN_PDKS_REV: 'e6f9c8876da77220403014b116761b0b2d79aab4'
     defaults:
       run:
         shell: bash -l {0}
@@ -63,7 +63,7 @@ jobs:
     env:
       PACKAGE: 'misc/open_pdks.gf180mcuc'
       OS_NAME: 'linux'
-      OPEN_PDKS_REV: '032b059033c4cf67f94c5b7f0a44d936b8ff5aae'
+      OPEN_PDKS_REV: 'e6f9c8876da77220403014b116761b0b2d79aab4'
     defaults:
       run:
         shell: bash -l {0}
