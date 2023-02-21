@@ -2,6 +2,8 @@
 
 set -e
 
+mkdir -p $PREFIX/etc/conda/activate.d
+
 # https://github.com/RTimothyEdwards/open_pdks/issues/332
 sed -i -e 's/\/tech\/sky130/\/tech/' $PREFIX/share/pdk/sky130A/libs.tech/klayout/tech/sky130A.lyt
 
