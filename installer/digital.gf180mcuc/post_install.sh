@@ -1,11 +1,11 @@
 #!/bin/bash
 
 set -e
+
 # set gf180mcuc defaults
-cat >> $PREFIX/share/openlane/install/env.tcl <<EOF
-set ::env(PDK) "gf180mcuC"
-set ::env(STD_CELL_LIBRARY) "gf180mcu_fd_sc_mcu7t5v0"
-set ::env(STD_CELL_LIBRARY_OPT) "gf180mcu_fd_sc_mcu7t5v0"
+cat > $PREFIX/etc/conda/activate.d/open_pdks_activate.sh <<EOF
+export PDK_ROOT=\$CONDA_PREFIX/share/pdk
+export PDK=gf180mcuC
 EOF
 
 # fix up yosys dep

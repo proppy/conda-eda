@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+
 # set gf180mcuc defaults
 cat > $PREFIX/etc/conda/activate.d/open_pdks_activate.sh <<EOF
 export PDK_ROOT=\$CONDA_PREFIX/share/pdk
