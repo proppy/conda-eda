@@ -266,7 +266,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_GF180MCUC_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ github.run_id }}
 
       - name: construct installer
         run: |
