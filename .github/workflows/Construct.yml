@@ -483,8 +483,7 @@ jobs:
       - run: |
           cat << EOF > release-notes.md
           \`\`\`
-          curl -L -o ~/Downloads/silicon-installer.sh https://github.com/proppy/conda-eda/releases/download/$TAG/mixed-signal.gf180mcuc-0-Linux-x86_64.sh
-          bash ~/Downloads/silicon-installer.sh -b -p silicon-env/
+          bash ~/Downloads/mixed-signal.gf180mcuc-0-Linux-x86_64.sh -b -p silicon-env/
           source silicon-env/bin/activate
           xschem -v
           ngspice -v
@@ -497,6 +496,8 @@ jobs:
           netgen -batch quit
           magic -dnull -noconsole --version
           echo exit | flow.tcl -interactive # openlane
+          echo \$PDK_ROOT
+          echo \$PDK
           \`\`\`
           EOF
 
