@@ -480,10 +480,31 @@ jobs:
           git push origin "HEAD:refs/tags/$TAG"
           echo "TAG=$TAG" >> $GITHUB_ENV
 
+      - run: |
+          cat << EOF > release-notes.md
+          \`\`\`
+          curl -L -o ~/Downloads/silicon-installer.sh https://github.com/proppy/conda-eda/releases/download/$TAG/mixed-signal.gf180mcuc-0-Linux-x86_64.sh
+          bash ~/Downloads/silicon-installer.sh -b -p silicon-env/
+          source silicon-env/bin/activate
+          xschem -v
+          ngspice -v
+          klayout -v
+          codegen_main --version \# xls
+          yosys --version
+          sby --help
+          iverilog -V
+          openroad -version
+          netgen -batch quit
+          magic -dnull -noconsole --version
+          echo exit | flow.tcl -interactive \# openlane
+          \`\`\`
+          EOF
+
       - uses: softprops/action-gh-release@v1
         with:
           name: ${{ env.TAG }}
           tag_name: ${{ env.TAG }}
+          body_path: release-notes.md
           files: |
             digital*-installer/*.sh
             analog*-installer/*.sh
