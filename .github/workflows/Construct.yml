@@ -47,7 +47,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_sky130a-${{ github.run_id }}
 
       - name: checkout conda-eda
         uses: actions/checkout@v3
@@ -88,7 +88,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ github.run_id }}
 
       - name: checkout conda-eda
         uses: actions/checkout@v3
@@ -119,7 +119,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_SKY130A_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_sky130a-${{ github.run_id }}
 
       - name: construct installer
         run: |
@@ -168,7 +168,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_SKY130A_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_sky130a-${{ github.run_id }}
 
       - name: construct installer
         run: |
@@ -217,7 +217,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_SKY130A_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_sky130a-${{ github.run_id }}
 
       - name: construct installer
         run: |
@@ -315,7 +315,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_GF180MCUC_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ github.run_id }}
 
       - name: construct installer
         run: |
@@ -364,7 +364,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_GF180MCUC_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ github.run_id }}
 
       - name: construct installer
         run: |
@@ -416,14 +416,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ env.OPEN_PDKS_SKY130A_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_sky130a-${{ github.run_id }}
 
       - name: restore open_pdks gf180mcuC cache
         id: cache-gf180mcu-open_pdks
         uses: actions/cache@v3
         with:
           path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ env.OPEN_PDKS_GF180MCUC_REV }}-${{ env.CONDA_EDA_REV }}
+          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ github.run_id }}
 
       - name: construct installer
         run: |
