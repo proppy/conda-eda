@@ -32,7 +32,9 @@ test:
     - ir_converter_main --version
     - opt_main --version
     - codegen_main --version
+    - xlscc --version
     - interpreter_main $RECIPE_DIR/test_stdlib.x
+    - xlscc $RECIPE_DIR/test_xlscc.cc
 
 about:
   home: https://google.github.io/xls/
