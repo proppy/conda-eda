@@ -7,7 +7,7 @@ channels:
   - file:///tmp/conda-bld
 
 specs:
-  - python 3.7*
+  - python
   - conda
   - open_pdks.sky130a
   - xschem
@@ -16,12 +16,12 @@ specs:
   - ngspice
   - pandas
   - openlane
-  - xls
+  - xls=0.0.0_0000_g255d8b71
   - iverilog
   - symbiyosys
 
 channels_remap:
   - src: file:///tmp/conda-bld
     dest: https://conda.anaconda.org/litex-hub
-
+  
 post_install: post_install.sh

@@ -7,7 +7,7 @@ channels:
   - file:///tmp/conda-bld
 
 specs:
-  - python 3.7*
+  - python
   - conda
   - open_pdks.gf180mcuc
   - xschem
@@ -16,7 +16,7 @@ specs:
   - ngspice
   - pandas
   - openlane
-  - xls
+  - xls=0.0.0_0000_g255d8b71
   - iverilog
   - symbiyosys
 
