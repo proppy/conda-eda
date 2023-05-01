@@ -1,0 +1,582 @@
+diff --git a/dependency_support/pip_requirements.txt b/dependency_support/pip_requirements.txt
+index 2adb5d6e..11d732b0 100644
+--- a/dependency_support/pip_requirements.txt
++++ b/dependency_support/pip_requirements.txt
+@@ -1,16 +1,4 @@
+-Flask==2.1.3
+-Jinja2==3.1.2
+-werkzeug==2.2.3
+-itsdangerous>=2.0
+-click==8.0.1
+-markupsafe==2.1.1
+-termcolor==1.1.0
+-psutil==5.7.0
+-portpicker==1.3.1
+-pyyaml==5.4.1
+-
+-# Note: numpy and scipy version availability seems to differ between Ubuntu
+-# versions that we want to support (e.g. 18.04 vs 20.04), so we accept a
+-# range that makes successful installation on those platforms possible.
+-numpy>=1.21
+-scipy>=1.5.4,<=1.8.1
++Jinja2
++markupsafe
++numpy
++scipy
+diff --git a/docs/check_nav.py b/docs/check_nav.py
+deleted file mode 100644
+index fe9ec898..00000000
+--- a/docs/check_nav.py
++++ /dev/null
+@@ -1,90 +0,0 @@
+-# Copyright 2022 The XLS Authors
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#      http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+-"""Test that checks mkdocs nav and markdown files correspond."""
+-
+-import os
+-import sys
+-from typing import Sequence
+-
+-from absl import app
+-import yaml
+-
+-from xls.common import runfiles
+-
+-
+-def main(argv: Sequence[str]) -> None:
+-  if len(argv) > 1:
+-    raise app.UsageError('Too many command-line arguments.')
+-
+-  with open(runfiles.get_path('mkdocs.yml')) as f:
+-    config = yaml.load(f, Loader=yaml.Loader)
+-
+-  nav = config['nav']
+-
+-  nav_files = []
+-
+-  def extract_files(node):
+-    if isinstance(node, str):
+-      nav_files.append(node)
+-    elif isinstance(node, list):
+-      for e in node:
+-        extract_files(e)
+-    elif isinstance(node, dict):
+-      for _, v in node.items():
+-        extract_files(v)
+-    else:
+-      raise NotImplementedError(f'Unhandled YAML construct: {node!r}')
+-
+-  extract_files(nav)
+-
+-  existing_files = []
+-  top_dirpath = None
+-  for dirpath, _, filenames in runfiles.walk_resources('docs_src/'):
+-    if top_dirpath is None:
+-      top_dirpath = dirpath
+-
+-    existing_files += [
+-        os.path.relpath(os.path.join(dirpath, f), top_dirpath)
+-        for f in filenames
+-        if f.endswith('.md')
+-    ]
+-
+-  # These are handled specially in the import/export flow, so it is ok if
+-  # they look they do not exist before export.
+-  special_files = {'contributing.md', 'README.md'}
+-
+-  no_nav = set(existing_files) - set(nav_files)
+-  exit_code = 0
+-  if no_nav:
+-    print(
+-        'the following files have no corresponding navigation:',
+-        no_nav,
+-        file=sys.stderr)
+-    exit_code = 1
+-
+-  # Files that have a corresponding navigation, but do not exist (DNE) in the
+-  # filesystem.
+-  nav_but_dne = set(nav_files) - set(existing_files) - special_files
+-  if nav_but_dne:
+-    print(
+-        'the following files have navigation but do not exist:',
+-        nav_but_dne,
+-        file=sys.stderr)
+-    exit_code = 1
+-
+-  sys.exit(exit_code)
+-
+-
+-if __name__ == '__main__':
+-  app.run(main)
+diff --git a/docs_src/BUILD b/docs_src/BUILD
+index 1bd284a2..efc4d2eb 100644
+--- a/docs_src/BUILD
++++ b/docs_src/BUILD
+@@ -41,21 +41,3 @@ filegroup(
+         "//docs_src/tutorials:all_files",
+     ],
+ )
+-
+-py_test(
+-    name = "check_nav",
+-    srcs = ["check_nav.py"],
+-    data = [
+-        ":all_markdown",
+-        "//:mkdocs.yml",
+-    ],
+-    python_version = "PY3",
+-    srcs_version = "PY3",
+-    deps = [
+-        requirement("pyyaml"),
+-        "//xls/common:runfiles",
+-        "@com_google_absl_py//absl:app",
+-        "@com_google_absl_py//absl/flags",
+-        "@com_google_absl_py//absl/logging",
+-    ],
+-)
+diff --git a/docs_src/check_nav.py b/docs_src/check_nav.py
+deleted file mode 100644
+index fe9ec898..00000000
+--- a/docs_src/check_nav.py
++++ /dev/null
+@@ -1,90 +0,0 @@
+-# Copyright 2022 The XLS Authors
+-#
+-# Licensed under the Apache License, Version 2.0 (the "License");
+-# you may not use this file except in compliance with the License.
+-# You may obtain a copy of the License at
+-#
+-#      http://www.apache.org/licenses/LICENSE-2.0
+-#
+-# Unless required by applicable law or agreed to in writing, software
+-# distributed under the License is distributed on an "AS IS" BASIS,
+-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+-# See the License for the specific language governing permissions and
+-# limitations under the License.
+-"""Test that checks mkdocs nav and markdown files correspond."""
+-
+-import os
+-import sys
+-from typing import Sequence
+-
+-from absl import app
+-import yaml
+-
+-from xls.common import runfiles
+-
+-
+-def main(argv: Sequence[str]) -> None:
+-  if len(argv) > 1:
+-    raise app.UsageError('Too many command-line arguments.')
+-
+-  with open(runfiles.get_path('mkdocs.yml')) as f:
+-    config = yaml.load(f, Loader=yaml.Loader)
+-
+-  nav = config['nav']
+-
+-  nav_files = []
+-
+-  def extract_files(node):
+-    if isinstance(node, str):
+-      nav_files.append(node)
+-    elif isinstance(node, list):
+-      for e in node:
+-        extract_files(e)
+-    elif isinstance(node, dict):
+-      for _, v in node.items():
+-        extract_files(v)
+-    else:
+-      raise NotImplementedError(f'Unhandled YAML construct: {node!r}')
+-
+-  extract_files(nav)
+-
+-  existing_files = []
+-  top_dirpath = None
+-  for dirpath, _, filenames in runfiles.walk_resources('docs_src/'):
+-    if top_dirpath is None:
+-      top_dirpath = dirpath
+-
+-    existing_files += [
+-        os.path.relpath(os.path.join(dirpath, f), top_dirpath)
+-        for f in filenames
+-        if f.endswith('.md')
+-    ]
+-
+-  # These are handled specially in the import/export flow, so it is ok if
+-  # they look they do not exist before export.
+-  special_files = {'contributing.md', 'README.md'}
+-
+-  no_nav = set(existing_files) - set(nav_files)
+-  exit_code = 0
+-  if no_nav:
+-    print(
+-        'the following files have no corresponding navigation:',
+-        no_nav,
+-        file=sys.stderr)
+-    exit_code = 1
+-
+-  # Files that have a corresponding navigation, but do not exist (DNE) in the
+-  # filesystem.
+-  nav_but_dne = set(nav_files) - set(existing_files) - special_files
+-  if nav_but_dne:
+-    print(
+-        'the following files have navigation but do not exist:',
+-        nav_but_dne,
+-        file=sys.stderr)
+-    exit_code = 1
+-
+-  sys.exit(exit_code)
+-
+-
+-if __name__ == '__main__':
+-  app.run(main)
+diff --git a/xls/dslx/BUILD b/xls/dslx/BUILD
+index 1faa29bd..1eae175b 100644
+--- a/xls/dslx/BUILD
++++ b/xls/dslx/BUILD
+@@ -16,8 +16,6 @@
+ 
+ # pytype tests are present in this file
+ 
+-load("@xls_pip_deps//:requirements.bzl", "requirement")
+-
+ package(
+     default_applicable_licenses = ["//:license"],
+     default_visibility = ["//xls:xls_internal"],
+diff --git a/xls/fuzzer/BUILD b/xls/fuzzer/BUILD
+index aaec83a2..bb0601a0 100644
+--- a/xls/fuzzer/BUILD
++++ b/xls/fuzzer/BUILD
+@@ -12,8 +12,6 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-load("@xls_pip_deps//:requirements.bzl", "requirement")
+-
+ # pytype binary, test, library
+ load("//xls/build_rules:py_proto_library.bzl", "xls_py_proto_library")
+ load("//xls/fuzzer:build_defs.bzl", "generate_crasher_regression_tests")
+@@ -292,21 +290,6 @@ generate_crasher_regression_tests(
+     },
+ )
+ 
+-py_library(
+-    name = "run_fuzz_multiprocess_lib",
+-    srcs = ["run_fuzz_multiprocess.py"],
+-    srcs_version = "PY3ONLY",
+-    deps = [
+-        ":run_fuzz",
+-        ":sample_runner",
+-        requirement("termcolor"),
+-        "//xls/common:gfile",
+-        "//xls/common:multiprocess",
+-        "//xls/fuzzer/python:cpp_ast_generator",
+-        "//xls/fuzzer/python:cpp_sample",
+-    ],
+-)
+-
+ cc_library(
+     name = "cpp_sample",
+     srcs = ["sample.cc"],
+@@ -323,25 +306,6 @@ cc_library(
+     ],
+ )
+ 
+-py_binary(
+-    name = "run_fuzz_multiprocess",
+-    srcs = ["run_fuzz_multiprocess_main.py"],
+-    main = "run_fuzz_multiprocess_main.py",
+-    python_version = "PY3",
+-    srcs_version = "PY3",
+-    deps = [
+-        ":cli_helpers",
+-        ":run_fuzz_multiprocess_lib",
+-        requirement("psutil"),
+-        "//xls/common:gfile",
+-        "//xls/common:multiprocess",
+-        "//xls/fuzzer/python:cpp_ast_generator",
+-        "//xls/fuzzer/python:cpp_sample",
+-        "@com_google_absl_py//absl:app",
+-        "@com_google_absl_py//absl/flags",
+-    ],
+-)
+-
+ py_binary(
+     name = "sample_runner_main",
+     srcs = ["sample_runner_main.py"],
+diff --git a/xls/solvers/python/BUILD b/xls/solvers/python/BUILD
+index 9a9f2260..7d5f9bfc 100644
+--- a/xls/solvers/python/BUILD
++++ b/xls/solvers/python/BUILD
+@@ -12,8 +12,6 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-load("@xls_pip_deps//:requirements.bzl", "requirement")
+-
+ # pytype binary, test, library
+ load("//xls/build_rules:py_proto_library.bzl", "xls_py_proto_library")
+ load("//dependency_support/pybind11:pybind11.bzl", "xls_pybind_extension")
+@@ -84,29 +82,6 @@ xls_py_proto_library(
+     ],
+ )
+ 
+-py_test(
+-    name = "lec_characterizer_test",
+-    srcs = ["lec_characterizer_test.py"],
+-    data = [
+-        "//xls/netlist:fake_cell_library.textproto",
+-        "//xls/synthesis:dummy_synthesis_server_main",
+-    ],
+-    python_version = "PY3",
+-    deps = [
+-        ":lec_characterizer",
+-        ":lec_characterizer_py_pb2",
+-        requirement("portpicker"),
+-        "//xls/common:gfile",
+-        "//xls/common:runfiles",
+-        "//xls/ir:op_py_pb2",
+-        "//xls/ir:xls_type_py_pb2",
+-        "//xls/ir/python:package",
+-        "@com_google_absl_py//absl/logging",
+-        "@com_google_absl_py//absl/testing:absltest",
+-        "@com_google_protobuf//:protobuf_python",
+-    ],
+-)
+-
+ xls_pybind_extension(
+     name = "z3_lec",
+     srcs = ["z3_lec.cc"],
+diff --git a/xls/synthesis/BUILD b/xls/synthesis/BUILD
+index 555410c0..fe752502 100644
+--- a/xls/synthesis/BUILD
++++ b/xls/synthesis/BUILD
+@@ -12,7 +12,6 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-load("@xls_pip_deps//:requirements.bzl", "requirement")
+ load("@com_github_grpc_grpc//bazel:python_rules.bzl", "py_grpc_library")
+ load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
+ 
+@@ -134,26 +133,6 @@ cc_binary(
+     ],
+ )
+ 
+-py_test(
+-    name = "synthesis_server_test",
+-    srcs = ["synthesis_server_test.py"],
+-    data = [
+-        ":dummy_synthesis_server_main",
+-        ":synthesis_client_main",
+-    ],
+-    python_version = "PY3",
+-    # 2020-01-08: Two test cases at the moment.
+-    shard_count = 2,
+-    srcs_version = "PY3",
+-    deps = [
+-        ":synthesis_py_pb2",
+-        requirement("portpicker"),
+-        "//xls/common:runfiles",
+-        "@com_google_absl_py//absl/testing:absltest",
+-        "@com_google_protobuf//:protobuf_python",
+-    ],
+-)
+-
+ cc_library(
+     name = "server_credentials",
+     srcs = ["server_credentials.cc"],
+@@ -197,19 +176,3 @@ py_library(
+         "@com_google_protobuf//:protobuf_python",
+     ],
+ )
+-
+-py_test(
+-    name = "synthesis_utils_test",
+-    srcs = ["synthesis_utils_test.py"],
+-    data = [":dummy_synthesis_server_main"],
+-    python_version = "PY3",
+-    shard_count = 7,
+-    srcs_version = "PY3",
+-    deps = [
+-        ":client_credentials",
+-        ":synthesis_utils",
+-        requirement("portpicker"),
+-        "//xls/common:runfiles",
+-        "@com_google_absl_py//absl/testing:absltest",
+-    ],
+-)
+diff --git a/xls/synthesis/openroad/BUILD b/xls/synthesis/openroad/BUILD
+index 840cec16..7263c455 100644
+--- a/xls/synthesis/openroad/BUILD
++++ b/xls/synthesis/openroad/BUILD
+@@ -14,8 +14,6 @@
+ 
+ # pytype tests are present in this file
+ 
+-load("@xls_pip_deps//:requirements.bzl", "requirement")
+-
+ package(
+     licenses = ["notice"],  # Apache 2.0
+ )
+@@ -54,25 +52,4 @@ cc_binary(
+     ],
+ )
+ 
+-py_test(
+-    name = "json_metrics_server_test",
+-    srcs = ["json_metrics_server_test.py"],
+-    data = [
+-        ":dummy_metrics_main",
+-        ":json_metrics_server_main",
+-        "//xls/synthesis:synthesis_client_main",
+-    ],
+-    python_version = "PY3",
+-    # One shard for each different server test.
+-    shard_count = 5,
+-    srcs_version = "PY3",
+-    deps = [
+-        requirement("portpicker"),
+-        "//xls/common:runfiles",
+-        "//xls/synthesis:synthesis_py_pb2",
+-        "@com_google_absl_py//absl/testing:absltest",
+-        "@com_google_protobuf//:protobuf_python",
+-    ],
+-)
+-
+ exports_files(["sta_by_stage.tcl"])
+diff --git a/xls/synthesis/yosys/BUILD b/xls/synthesis/yosys/BUILD
+index 15c3640a..4c639276 100644
+--- a/xls/synthesis/yosys/BUILD
++++ b/xls/synthesis/yosys/BUILD
+@@ -14,8 +14,6 @@
+ 
+ # pytype tests are present in this file
+ 
+-load("@xls_pip_deps//:requirements.bzl", "requirement")
+-
+ package(
+     default_visibility = ["//xls:xls_internal"],
+     licenses = ["notice"],  # Apache 2.0
+@@ -105,27 +103,6 @@ cc_binary(
+     ],
+ )
+ 
+-py_test(
+-    name = "yosys_server_test",
+-    srcs = ["yosys_server_test.py"],
+-    data = [
+-        ":bogusys",
+-        ":nextpbr",
+-        ":yosys_server_main",
+-        ":yosys_sta_server_main",
+-        "//xls/synthesis:synthesis_client_main",
+-    ],
+-    python_version = "PY3",
+-    srcs_version = "PY3",
+-    deps = [
+-        requirement("portpicker"),
+-        "//xls/common:runfiles",
+-        "//xls/synthesis:synthesis_py_pb2",
+-        "@com_google_absl_py//absl/testing:absltest",
+-        "@com_google_protobuf//:protobuf_python",
+-    ],
+-)
+-
+ cc_library(
+     name = "yosys_util",
+     srcs = ["yosys_util.cc"],
+diff --git a/xls/tools/BUILD b/xls/tools/BUILD
+index 8b6752ca..3023bd48 100644
+--- a/xls/tools/BUILD
++++ b/xls/tools/BUILD
+@@ -12,8 +12,6 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-load("@xls_pip_deps//:requirements.bzl", "requirement")
+-
+ # pytype binary and test
+ # cc_proto_library is used in this file
+ load("//xls/build_rules:py_proto_library.bzl", "xls_py_proto_library")
+@@ -1292,20 +1290,6 @@ py_test(
+     ],
+ )
+ 
+-py_binary(
+-    name = "run_timing_characterization",
+-    srcs = ["run_timing_characterization.py"],
+-    python_version = "PY3",
+-    srcs_version = "PY3",
+-    deps = [
+-        requirement("portpicker"),
+-        "//xls/synthesis:timing_characterization_client",
+-        "@com_google_absl_py//absl:app",
+-        "@com_google_absl_py//absl/flags",
+-        "@com_google_absl_py//absl/logging",
+-    ],
+-)
+-
+ proto_library(
+     name = "design_stats_proto",
+     srcs = ["design_stats.proto"],
+diff --git a/xls/visualization/ir_viz/BUILD b/xls/visualization/ir_viz/BUILD
+index bf519b4d..eaec70dc 100644
+--- a/xls/visualization/ir_viz/BUILD
++++ b/xls/visualization/ir_viz/BUILD
+@@ -12,8 +12,6 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-load("@xls_pip_deps//:requirements.bzl", "requirement")
+-
+ # pytype binary and test
+ load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
+ load("@bazel_skylib//rules:build_test.bzl", "build_test")
+@@ -40,35 +38,6 @@ list_filegroup_files(
+     out = "ir_examples_file_list.txt",
+ )
+ 
+-py_binary(
+-    name = "app",
+-    srcs = ["app.py"],
+-    data = [
+-        "ir_examples_file_list.txt",
+-        "ir_graph.css",
+-        "templates/splash.tmpl",
+-        "third_party_js.txt",
+-        ":ir_examples",
+-        ":js_compiled",
+-        "//xls/tools:opt_main",
+-    ],
+-    python_version = "PY3",
+-    srcs_version = "PY3",
+-    deps = [
+-        requirement("Flask"),
+-        requirement("Jinja2"),
+-        requirement("click"),
+-        requirement("itsdangerous"),
+-        requirement("MarkupSafe"),
+-        requirement("Werkzeug"),
+-        "//xls/common:runfiles",
+-        "//xls/common/python:init_xls",
+-        "//xls/visualization/ir_viz/python:ir_to_json",
+-        "@com_google_absl_py//absl:app",
+-        "@com_google_absl_py//absl/flags",
+-    ],
+-)
+-
+ # A test which tests the UI is a lot of work to make. For now, at least test
+ # that the visualization app builds.
+ build_test(
