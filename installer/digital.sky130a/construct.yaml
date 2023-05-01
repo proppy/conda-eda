@@ -4,6 +4,7 @@ version: 0
 channels:
   - https://conda.anaconda.org/litex-hub
   - https://repo.anaconda.com/pkgs/main/
+  - file:///tmp/conda-bld
 
 specs:
   - python 3.7*

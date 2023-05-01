@@ -14,18 +14,11 @@ defaults:
     shell: bash
 
 jobs:
-  open_pdks-sky130a:
-    outputs:
-      OPEN_PDKS_SKY130A_REV: ${{ steps.env.outputs.OPEN_PDKS_SKY130A_REV }}
-      CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
+  xls:
     runs-on: 'ubuntu-20.04'
     env:
-      PACKAGE: 'misc/open_pdks.sky130a'
+      PACKAGE: 'hls/xls'
       OS_NAME: 'linux'
-      OPEN_PDKS_REV: 'e6f9c8876da77220403014b116761b0b2d79aab4'
-    defaults:
-      run:
-        shell: bash -l {0}
 
     steps:
       - name: checkout conda-eda
@@ -35,74 +28,20 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: env
-        id: env
-        run: |
-          echo "::set-output name=OPEN_PDKS_SKY130A_REV::$OPEN_PDKS_REV"
-          CONDA_EDA_REV=$(git rev-parse HEAD)
-          echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
-          echo "::set-output name=CONDA_EDA_REV::$CONDA_EDA_REV"
-
-      - name: restore open_pdks cache
-        id: cache-open_pdks
+      - name: restore xls cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ github.run_id }}
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
+          key: ${{ runner.os }}-xls-${{ github.run_id }}
 
       - name: checkout conda-eda
         uses: actions/checkout@v3
 
       - uses: ./ci
-        if: steps.cache-open_pdks.outputs.cache-hit != 'true'
-
-  open_pdks-gf180mcuc:
-    outputs:
-      OPEN_PDKS_GF180MCUC_REV: ${{ steps.env.outputs.OPEN_PDKS_GF180MCUC_REV }}
-      CONDA_EDA_REV: ${{ steps.env.outputs.CONDA_EDA_REV }}
-    runs-on: 'ubuntu-20.04'
-    env:
-      PACKAGE: 'misc/open_pdks.gf180mcuc'
-      OS_NAME: 'linux'
-      OPEN_PDKS_REV: 'e6f9c8876da77220403014b116761b0b2d79aab4'
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
-
-      - name: env
-        id: env
-        run: |
-          echo "::set-output name=OPEN_PDKS_GF180MCUC_REV::$OPEN_PDKS_REV"
-          CONDA_EDA_REV=$(git rev-parse HEAD)
-          echo "CONDA_EDA_REV=$CONDA_EDA_REV" >> $GITHUB_ENV
-          echo "::set-output name=CONDA_EDA_REV::$CONDA_EDA_REV"
-
-      - name: restore open_pdks cache
-        id: cache-open_pdks
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ github.run_id }}
-
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: ./ci
-        if: steps.cache-open_pdks.outputs.cache-hit != 'true'
 
   digital-sky130a-installer:
     needs:
-      - open_pdks-sky130a
-    env:
-      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_SKY130A_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-sky130a.outputs.CONDA_EDA_REV }}
+      - xls
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -115,18 +54,17 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore open_pdks cache
-        id: cache-open_pdks
+      - name: restore xls cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ github.run_id }}
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
+          key: ${{ runner.os }}-xls-${{ github.run_id }}
 
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/noarch
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch/
+          mkdir -p /tmp/conda-bld/linux-64
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/digital.sky130a/
 
@@ -136,7 +74,7 @@ jobs:
 
       - name: smoke test
         run: |
-          rm -fR /tmp/conda-bld/noarch/
+          rm -fR /tmp/conda-bld/linux-64/
           bash digital.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -147,11 +85,6 @@ jobs:
             /home/runner/work/conda-eda/conda-eda/digital.sky130a-0-Linux-x86_64.sh
 
   analog-sky130a-installer:
-    needs:
-      - open_pdks-sky130a
-    env:
-      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_SKY130A_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-sky130a.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -164,19 +97,9 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore open_pdks cache
-        id: cache-open_pdks
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ github.run_id }}
-
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/noarch
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch
-          conda index /tmp/conda-bld
           constructor installer/analog.sky130a/
 
       - name: dump checksum
@@ -185,7 +108,6 @@ jobs:
 
       - name: smoke test
         run: |
-          rm -fR /tmp/conda-bld/noarch/          
           bash analog.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -197,10 +119,7 @@ jobs:
 
   mixed-signal-sky130a-installer:
     needs:
-      - open_pdks-sky130a
-    env:
-      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_SKY130A_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-sky130a.outputs.CONDA_EDA_REV }}
+      - xls
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -213,18 +132,17 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore open_pdks cache
-        id: cache-open_pdks
+      - name: restore xls cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ github.run_id }}
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
+          key: ${{ runner.os }}-xls-${{ github.run_id }}
 
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/noarch
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch/
+          mkdir -p /tmp/conda-bld/linux-64
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.sky130a/
 
@@ -234,7 +152,7 @@ jobs:
 
       - name: smoke test
         run: |
-          rm -fR /tmp/conda-bld/noarch/          
+          rm -fR /tmp/conda-bld/linux-64/          
           bash mixed-signal.sky130a-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -246,10 +164,7 @@ jobs:
 
   digital-gf180mcuc-installer:
     needs:
-      - open_pdks-gf180mcuc
-    env:
-      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_GF180MCUC_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-gf180mcuc.outputs.CONDA_EDA_REV }}
+      - xls
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -262,18 +177,18 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore open_pdks cache
-        id: cache-open_pdks
+      - name: restore xls cache
+        id: cache-xls
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ github.run_id }}
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
+          key: ${{ runner.os }}-xls-${{ github.run_id }}
 
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/noarch
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
+          mkdir -p /tmp/conda-bld/linux-64
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/digital.gf180mcuc/
 
@@ -283,7 +198,7 @@ jobs:
 
       - name: smoke test
         run: |
-          rm -fR /tmp/conda-bld/noarch/          
+          rm -fR /tmp/conda-bld/linux-64/          
           bash digital.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -294,11 +209,6 @@ jobs:
             /home/runner/work/conda-eda/conda-eda/digital.gf180mcuc-0-Linux-x86_64.sh
 
   analog-gf180mcuc-installer:
-    needs:
-      - open_pdks-gf180mcuc
-    env:
-      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_GF180MCUC_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-gf180mcuc.outputs.CONDA_EDA_REV }}
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -311,19 +221,10 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore open_pdks cache
-        id: cache-open_pdks
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ github.run_id }}
 
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/noarch
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch
-          conda index /tmp/conda-bld
           constructor installer/analog.gf180mcuc/
 
       - name: dump checksum
@@ -332,7 +233,6 @@ jobs:
 
       - name: smoke test
         run: |
-          rm -fR /tmp/conda-bld/noarch/          
           bash analog.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -344,10 +244,7 @@ jobs:
 
   mixed-signal-gf180mcuc-installer:
     needs:
-      - open_pdks-gf180mcuc
-    env:
-      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_GF180MCUC_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-gf180mcuc.outputs.CONDA_EDA_REV }}
+      - xls
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -360,18 +257,18 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore open_pdks cache
-        id: cache-open_pdks
+      - name: restore xls cache
+        id: cache-xls
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ github.run_id }}
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
+          key: ${{ runner.os }}-xls-${{ github.run_id }}
 
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/noarch
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
+          mkdir -p /tmp/conda-bld/linux-64
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal.gf180mcuc/
 
@@ -381,7 +278,7 @@ jobs:
 
       - name: smoke test
         run: |
-          rm -fR /tmp/conda-bld/noarch/          
+          rm -fR /tmp/conda-bld/linux-64/          
           bash mixed-signal.gf180mcuc-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
@@ -394,12 +291,7 @@ jobs:
   mixed-signal-installer:
     continue-on-error: true
     needs:
-      - open_pdks-sky130a
-      - open_pdks-gf180mcuc
-    env:
-      OPEN_PDKS_SKY130A_REV: ${{ needs.open_pdks-sky130a.outputs.OPEN_PDKS_SKY130A_REV }}
-      OPEN_PDKS_GF180MCUC_REV: ${{ needs.open_pdks-gf180mcuc.outputs.OPEN_PDKS_GF180MCUC_REV }}
-      CONDA_EDA_REV: ${{ needs.open_pdks-gf180mcuc.outputs.CONDA_EDA_REV }}
+      - xls
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -412,26 +304,17 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore open_pdks sky130A cache
-        id: cache-sky130a-open_pdks
+      - name: restore xls cache
         uses: actions/cache@v3
         with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_sky130a-${{ github.run_id }}
-
-      - name: restore open_pdks gf180mcuC cache
-        id: cache-gf180mcu-open_pdks
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2
-          key: ${{ runner.os }}-open_pdks_gf180mcuc-${{ github.run_id }}
+          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
+          key: ${{ runner.os }}-xls-${{ github.run_id }}
 
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/noarch
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.sky130a-*.tar.bz2 /tmp/conda-bld/noarch/
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/noarch/open_pdks.gf180mcuc-*.tar.bz2 /tmp/conda-bld/noarch/
+          mkdir -p /tmp/conda-bld/linux-64
+          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
           conda index /tmp/conda-bld
           constructor installer/mixed-signal/
 
@@ -441,7 +324,7 @@ jobs:
 
       - name: smoke test
         run: |
-          rm -fR /tmp/conda-bld/noarch/          
+          rm -fR /tmp/conda-bld/linux-64/          
           bash mixed-signal-0-Linux-x86_64.sh -b -p /tmp/env
 
       - name: archive installer
