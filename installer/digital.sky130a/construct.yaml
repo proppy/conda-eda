@@ -4,19 +4,14 @@ version: 0
 channels:
   - https://conda.anaconda.org/litex-hub
   - https://repo.anaconda.com/pkgs/main/
-  - file:///tmp/conda-bld
 
 specs:
   - python
   - conda
   - openlane
   - open_pdks.sky130a
-  - xls=0.0.0_0000_g255d8b71
+  - xls
   - iverilog
   - symbiyosys
-
-channels_remap:
-  - src: file:///tmp/conda-bld
-    dest: https://conda.anaconda.org/litex-hub
 
 post_install: post_install.sh

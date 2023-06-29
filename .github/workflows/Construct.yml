@@ -14,34 +14,7 @@ defaults:
     shell: bash
 
 jobs:
-  xls:
-    runs-on: 'ubuntu-20.04'
-    env:
-      PACKAGE: 'hls/xls'
-      OS_NAME: 'linux'
-
-    steps:
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: installer-env
-
-      - name: restore xls cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
-
-      - name: checkout conda-eda
-        uses: actions/checkout@v3
-
-      - uses: ./ci
-
   digital-sky130a-installer:
-    needs:
-      - xls
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -54,18 +27,9 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore xls cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
-
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/linux-64
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
           constructor installer/digital.sky130a/
 
       - name: dump checksum
@@ -118,8 +82,6 @@ jobs:
             /home/runner/work/conda-eda/conda-eda/analog.sky130a-0-Linux-x86_64.sh
 
   mixed-signal-sky130a-installer:
-    needs:
-      - xls
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -132,18 +94,9 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore xls cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
-
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/linux-64
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
           constructor installer/mixed-signal.sky130a/
 
       - name: dump checksum
@@ -163,8 +116,6 @@ jobs:
             /home/runner/work/conda-eda/conda-eda/mixed-signal.sky130a-0-Linux-x86_64.sh
 
   digital-gf180mcuc-installer:
-    needs:
-      - xls
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -177,19 +128,9 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore xls cache
-        id: cache-xls
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
-
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/linux-64
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
           constructor installer/digital.gf180mcuc/
 
       - name: dump checksum
@@ -243,8 +184,6 @@ jobs:
             /home/runner/work/conda-eda/conda-eda/analog.gf180mcuc-0-Linux-x86_64.sh
 
   mixed-signal-gf180mcuc-installer:
-    needs:
-      - xls
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -257,19 +196,9 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore xls cache
-        id: cache-xls
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
-
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/linux-64
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
           constructor installer/mixed-signal.gf180mcuc/
 
       - name: dump checksum
@@ -290,8 +219,6 @@ jobs:
 
   mixed-signal-installer:
     continue-on-error: true
-    needs:
-      - xls
     runs-on: 'ubuntu-20.04'
     defaults:
       run:
@@ -304,18 +231,9 @@ jobs:
         with:
           activate-environment: installer-env
 
-      - name: restore xls cache
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2
-          key: ${{ runner.os }}-xls-${{ github.run_id }}
-
       - name: construct installer
         run: |
           conda install ctools::constructor>=3.4.3 conda-build
-          mkdir -p /tmp/conda-bld/linux-64
-          cp /home/runner/work/conda-eda/conda-eda/workdir/conda-env/conda-bld/linux-64/xls-*.tar.bz2 /tmp/conda-bld/linux-64/
-          conda index /tmp/conda-bld
           constructor installer/mixed-signal/
 
       - name: dump checksum
