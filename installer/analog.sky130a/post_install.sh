@@ -6,6 +6,9 @@ mkdir -p $PREFIX/etc/conda/activate.d
 
 # https://github.com/RTimothyEdwards/open_pdks/issues/332
 sed -i -e 's/\/tech\/sky130/\/tech/' $PREFIX/share/pdk/sky130A/libs.tech/klayout/tech/sky130A.lyt
+sed -i -e 's/sky130\.lyp/sky130A\.lyp/' $PREFIX/share/pdk/sky130A/libs.tech/klayout/tech/sky130A.lyt
+# https://github.com/efabless/sky130_klayout_pdk/issues/7
+sed -i -e 's/<https.*\/>.//' $PREFIX/share/pdk/sky130A/libs.tech/klayout/lvs/sky130.lylvs
 
 # set sky130a defaults
 cat > $PREFIX/etc/conda/activate.d/open_pdks_activate.sh <<EOF
